@@ -7,6 +7,21 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-# Top-level stub for the namespace.
-module Simmer
-end
+require 'acts_as_hashable'
+require 'aws-sdk-s3'
+require 'benchmark'
+require 'bigdecimal'
+require 'fileutils'
+require 'forwardable'
+require 'mysql2'
+require 'objectable'
+require 'pdi'
+require 'securerandom'
+require 'set'
+require 'stringento'
+require 'yaml'
+
+require_relative 'simmer/evaluator'
+require_relative 'simmer/record_set'
+require_relative 'simmer/specification'
+require_relative 'simmer/suite'
