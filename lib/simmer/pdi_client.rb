@@ -15,7 +15,7 @@ module Simmer
                 :spoon
 
     def initialize(config, files_path)
-      config = (config || {}).map { |k, v| [k.to_sym, v] }.to_h
+      config = (config || {}).symbolize_keys
 
       @spoon      = Pdi::Spoon.new(config)
       @files_path = files_path

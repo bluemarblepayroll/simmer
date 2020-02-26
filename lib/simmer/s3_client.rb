@@ -12,7 +12,7 @@ module Simmer
     attr_reader :bucket, :client, :encryption
 
     def initialize(config)
-      config = (config || {}).map { |k, v| [k.to_sym, v] }.to_h
+      config = (config || {}).symbolize_keys
 
       @client = Aws::S3::Client.new(
         access_key_id: config[:access_key_id],
@@ -26,7 +26,7 @@ module Simmer
       freeze
     end
 
-    def transfer!(specification)
+    def seed!(specification)
       s3_files = specification.stage.s3_files
 
       s3_files.each do |s3_file|
@@ -36,6 +36,14 @@ module Simmer
       end
 
       s3_files.length
+    end
+
+    def clean!
+      bucket.objects.inject(0) do |memo, object|
+        object.delete
+
+        memo + 1
+      end
     end
 
     private

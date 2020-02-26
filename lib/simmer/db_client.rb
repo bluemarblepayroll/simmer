@@ -16,7 +16,7 @@ module Simmer
                 :table_names
 
     def initialize(config, fixture_set)
-      config = (config || {}).map { |k, v| [k.to_sym, v] }.to_h
+      config = (config || {}).symbolize_keys
 
       @client      = Mysql2::Client.new(config)
       @fixture_set = fixture_set

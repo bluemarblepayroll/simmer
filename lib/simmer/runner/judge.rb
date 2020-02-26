@@ -57,7 +57,7 @@ module Simmer
         table_name          = assertion.name
         fields              = assertion.keys
         actual_records      = db_client.records(table_name, fields)
-        actual_record_set   = RecordSet.new(actual_records)
+        actual_record_set   = Util::RecordSet.new(actual_records)
         expected_record_set = assertion.record_set
 
         return nil if actual_record_set == expected_record_set

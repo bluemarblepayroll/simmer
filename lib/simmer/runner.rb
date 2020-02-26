@@ -29,13 +29,14 @@ module Simmer
 
       clean_db
       seed_db(specification)
-      stage_s3(specification)
+      clean_s3
+      seed_s3(specification)
 
       pdi_client_result = execute_pdi(specification, config)
       judge_result      = assert(specification, pdi_client_result)
 
       Result.new(judge_result, specification.name, pdi_client_result).tap do |result|
-        msg = result.pass? ? 'Pass' : 'Fail'
+        msg = result.pass? ? 'PASS' : 'FAIL'
         print_waiting('Done', 'Final verdict')
         print(msg)
       end
@@ -48,7 +49,7 @@ module Simmer
     def clean_db
       print_waiting('Stage', 'Cleaning database')
       count = db_client.clean!
-      print("#{count} table(s)")
+      print("#{count} table(s) emptied")
 
       count
     end
@@ -56,15 +57,23 @@ module Simmer
     def seed_db(specification)
       print_waiting('Stage', 'Seeding database')
       count = db_client.seed!(specification)
-      print("#{count} record(s)")
+      print("#{count} record(s) inserted")
 
       count
     end
 
-    def stage_s3(specification)
-      print_waiting('Stage', 'Uploading to S3')
-      count = s3_client.transfer!(specification)
-      print("#{count} file(s)")
+    def clean_s3
+      print_waiting('Stage', 'Cleaning S3')
+      count = s3_client.clean!
+      print("#{count} file(s) deleted")
+
+      count
+    end
+
+    def seed_s3(specification)
+      print_waiting('Stage', 'Seeding S3')
+      count = s3_client.seed!(specification)
+      print("#{count} file(s) uploaded")
 
       count
     end

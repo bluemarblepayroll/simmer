@@ -18,7 +18,7 @@ module Simmer
         def initialize(files: {}, keys: {})
           @files     = files || {}
           @keys      = keys || {}
-          @evaluator = Evaluator.new
+          @evaluator = Util::Evaluator.new
 
           freeze
         end

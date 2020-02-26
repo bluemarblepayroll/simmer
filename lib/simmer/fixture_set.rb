@@ -7,7 +7,7 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'fixture_set/fixture'
+require_relative 'fixture'
 
 module Simmer
   class FixtureSet

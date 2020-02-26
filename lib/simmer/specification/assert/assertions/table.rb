@@ -18,7 +18,7 @@ module Simmer
 
           def initialize(name:, records: [])
             @name       = name.to_s
-            @record_set = RecordSet.new(records)
+            @record_set = Util::RecordSet.new(records)
 
             freeze
           end

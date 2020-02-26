@@ -8,7 +8,7 @@
 #
 
 module Simmer
-  class Suite
+  class Session
     class Result
       attr_reader :runner_results
 
@@ -24,6 +24,12 @@ module Simmer
 
       def fail?
         runner_results.any?(&:fail?)
+      end
+
+      def time_in_seconds
+        runner_results.inject(0.0) do |memo, runner_result|
+          memo + runner_result.time_in_seconds
+        end
       end
 
       def write!(path)
@@ -49,6 +55,7 @@ module Simmer
       def to_h
         {
           'pass' => pass?,
+          'time_in_seconds' => time_in_seconds,
           'runner_results' => runner_results.map(&:to_h)
         }
       end
@@ -72,11 +79,11 @@ module Simmer
       def write_block(file, name, runner_id, contents)
         hyphens = '-' * 80
 
+        file.write("#{hyphens}\n")
         file.write("Name: #{name}\n")
         file.write("Runner ID: #{runner_id}\n")
         file.write("#{hyphens}\n")
         file.write("#{contents}\n")
-        file.write("#{hyphens}\n")
         file.write("\n")
 
         nil

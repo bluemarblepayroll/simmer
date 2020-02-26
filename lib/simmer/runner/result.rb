@@ -12,7 +12,11 @@ require_relative 'judge'
 module Simmer
   class Runner
     class Result
+      extend Forwardable
+
       attr_reader :id, :judge_result, :name, :pdi_client_result
+
+      def_delegators :pdi_client_result, :time_in_seconds
 
       def initialize(judge_result, name, pdi_client_result)
         @id                = SecureRandom.uuid
@@ -35,6 +39,7 @@ module Simmer
         {
           'name' => name,
           'id' => id,
+          'time_in_seconds' => time_in_seconds,
           'pass' => pass?,
           'pdi_client_result' => pdi_client_result.to_h,
           'judge_result' => judge_result.to_h

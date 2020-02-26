@@ -7,20 +7,19 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'stage/s3_file'
-
 module Simmer
-  class Specification
-    class Stage
-      acts_as_hashable
+  module Util
+    class Resolver
+      attr_reader :objectable_resolver
 
-      attr_reader :fixtures, :s3_files
-
-      def initialize(fixtures: [], s3_files: [])
-        @fixtures = Array(fixtures).map(&:to_s)
-        @s3_files = S3File.array(s3_files)
+      def initialize
+        @objectable_resolver = Objectable.resolver
 
         freeze
+      end
+
+      def resolve(value, input)
+        objectable_resolver.get(input, value)
       end
     end
   end
