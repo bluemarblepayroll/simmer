@@ -7,27 +7,24 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'bad_output_assertion'
-
 module Simmer
   class Specification
     class Assert
       class Assertions
-        class Output
-          acts_as_hashable
+        class BadOutputAssertion
+          attr_reader :expected_value
 
-          attr_reader :value
-
-          def initialize(value:)
-            @value = value.to_s
+          def initialize(expected_value)
+            @expected_value = expected_value
 
             freeze
           end
 
-          def assert(_database, output)
-            return nil if output.to_s.include?(value)
-
-            BadOutputAssertion.new(value)
+          def to_h
+            {
+              'type' => 'output',
+              'expected_value' => expected_value
+            }
           end
         end
       end

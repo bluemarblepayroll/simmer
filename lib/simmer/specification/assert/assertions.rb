@@ -7,6 +7,8 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+require_relative 'assertions/bad_output_assertion'
+require_relative 'assertions/bad_table_assertion'
 require_relative 'assertions/output'
 require_relative 'assertions/table'
 
