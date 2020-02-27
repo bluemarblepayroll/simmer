@@ -11,17 +11,17 @@ module Simmer
   class Suite
     class Specification
       class Stage
-        class S3File
+        class InputFile
           acts_as_hashable
 
-          attr_reader :key, :path
+          attr_reader :dest, :src
 
-          def initialize(key:, path:)
-            raise ArgumentError, 'key is required'  if key.to_s.empty?
-            raise ArgumentError, 'path is required' if path.to_s.empty?
+          def initialize(dest:, src:)
+            raise ArgumentError, 'dest is required'  if dest.to_s.empty?
+            raise ArgumentError, 'src is required'   if src.to_s.empty?
 
-            @key  = key.to_s
-            @path = path.to_s
+            @dest = dest.to_s
+            @src  = src.to_s
 
             freeze
           end

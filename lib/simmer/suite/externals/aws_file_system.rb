@@ -28,15 +28,15 @@ module Simmer
         end
 
         def write(specification)
-          s3_files = specification.stage.s3_files
+          files = specification.stage.files
 
-          s3_files.each do |s3_file|
-            path = File.join(files_dir, s3_file.path)
+          files.each do |file|
+            src = File.join(files_dir, file.src)
 
-            write_single(s3_file.key, path)
+            write_single(file.dest, src)
           end
 
-          s3_files.length
+          files.length
         end
 
         def clean
@@ -51,9 +51,9 @@ module Simmer
 
         attr_reader :bucket, :encryption, :files_dir
 
-        def write_single(key, local_path)
-          File.open(local_path, 'rb') do |file|
-            bucket.object(key).put(
+        def write_single(dest, src)
+          File.open(src, 'rb') do |file|
+            bucket.object(dest).put(
               body: file,
               server_side_encryption: encryption
             )

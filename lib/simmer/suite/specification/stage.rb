@@ -7,7 +7,7 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'stage/s3_file'
+require_relative 'stage/input_file'
 
 module Simmer
   class Suite
@@ -15,11 +15,11 @@ module Simmer
       class Stage
         acts_as_hashable
 
-        attr_reader :fixtures, :s3_files
+        attr_reader :files, :fixtures
 
-        def initialize(fixtures: [], s3_files: [])
+        def initialize(files: [], fixtures: [])
+          @files    = InputFile.array(files)
           @fixtures = Array(fixtures).map(&:to_s)
-          @s3_files = S3File.array(s3_files)
 
           freeze
         end
