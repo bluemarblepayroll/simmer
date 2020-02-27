@@ -7,11 +7,11 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'suite/configuration'
-require_relative 'suite/externals'
-require_relative 'suite/runner'
-require_relative 'suite/session'
-require_relative 'suite/specification'
+require_relative 'configuration'
+require_relative 'externals'
+require_relative 'runner'
+require_relative 'session'
+require_relative 'specification'
 
 # Entrypoint to the library
 module Simmer

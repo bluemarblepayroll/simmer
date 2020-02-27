@@ -8,12 +8,19 @@
 #
 
 module Simmer
-  module CoreExt
-    # Monkey-patches for the core Hash class.  These will be manually mixed in separately.
-    module Hash
-      unless method_defined?(:symbolize_keys)
-        def symbolize_keys
-          map { |k, v| [k.to_sym, v] }.to_h
+  class Specification
+    class Assert
+      class Assertions
+        class Output
+          acts_as_hashable
+
+          attr_reader :value
+
+          def initialize(value:)
+            @value = value.to_s
+
+            freeze
+          end
         end
       end
     end

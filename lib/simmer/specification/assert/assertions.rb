@@ -7,14 +7,17 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+require_relative 'assertions/output'
+require_relative 'assertions/table'
+
 module Simmer
-  module CoreExt
-    # Monkey-patches for the core Hash class.  These will be manually mixed in separately.
-    module Hash
-      unless method_defined?(:symbolize_keys)
-        def symbolize_keys
-          map { |k, v| [k.to_sym, v] }.to_h
-        end
+  class Specification
+    class Assert
+      class Assertions
+        acts_as_hashable_factory
+
+        register 'output', Output
+        register 'table', Table
       end
     end
   end

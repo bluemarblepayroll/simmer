@@ -8,5 +8,6 @@
 #
 
 require_relative 'util/evaluator'
+require_relative 'util/fixture_set'
 require_relative 'util/record_set'
 require_relative 'util/yaml_reader'
