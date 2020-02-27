@@ -7,71 +7,75 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'suite/result'
+require_relative 'suite/configuration'
+require_relative 'suite/externals'
+require_relative 'suite/runner'
+require_relative 'suite/session'
+require_relative 'suite/specification'
 
+# Entrypoint to the library
 module Simmer
   class Suite
+    DEFAULT_CONFIG_PATH = File.join('config', 'simmer.yaml')
+    DEFAULT_RESULTS_DIR = 'results'
+    DEFAULT_SPEC_DIR    = 'simmer'
+
+    attr_reader :configuration, :session
+
     def initialize(
-      config:,
-      out:,
-      resolver: Objectable.resolver,
-      results_dir:,
-      runner:
+      out: $stdout,
+      config_path: DEFAULT_CONFIG_PATH,
+      results_dir: DEFAULT_RESULTS_DIR,
+      spec_dir: DEFAULT_SPEC_DIR
     )
-      @config      = config || {}
-      @out         = out
-      @resolver    = resolver
-      @results_dir = results_dir
-      @runner      = runner
+      @configuration = Configuration.new(
+        config_path: config_path,
+        results_dir: results_dir,
+        spec_dir: spec_dir
+      )
+
+      runner = Runner.new(
+        database: database,
+        file_system: file_system,
+        out: out,
+        spoon_client: spoon_client
+      )
+
+      @session = Session.new(
+        config: configuration.config,
+        out: out,
+        results_dir: results_dir,
+        runner: runner
+      )
 
       freeze
     end
 
-    def run(specifications)
-      runner_results = run_all_specs(specifications)
-
-      Result.new(runner_results).tap do |result|
-        if result.pass?
-          out.puts('Suite ended successfully')
-        else
-          out.puts('Suite ended but was not successful')
-        end
-
-        result.write!(results_dir)
-
-        out.puts("Results can be viewed at #{results_dir}")
-      end
+    def run(path)
+      session.run(specifications(path))
     end
 
     private
 
-    attr_reader :config, :out, :results_dir, :resolver, :runner
+    def specifications(path)
+      path = path.to_s.empty? ? configuration.tests_dir : path
 
-    def run_all_specs(specifications)
-      out.puts('Simmer suite started')
-
-      count = specifications.length
-
-      out.puts("Running #{count} specification(s)")
-      print_line
-
-      specifications.map.with_index(1) do |specification, index|
-        run_single_spec(specification, index, count)
+      Util::YamlReader.new.all(path).map do |file, config|
+        config = (config || {}).merge(path: file)
+        Specification.make(config)
       end
     end
 
-    def run_single_spec(specification, index, count)
-      id = SecureRandom.uuid
-
-      out.puts("Test #{index} of #{count}: #{id}")
-
-      runner.run(specification, id: id, config: config).tap do
-        print_line
-      end
+    def database
+      Externals::MysqlDatabase.new(configuration.database_config, configuration.fixture_set)
     end
 
-    def print_line
-      out.puts('-' * 60)
+    def file_system
+      Externals::AwsFileSystem.new(configuration.file_system_config, configuration.files_dir)
+    end
+
+    def spoon_client
+      Externals::SpoonClient.new(configuration.spoon_client_config, configuration.files_dir)
     end
   end
 end
