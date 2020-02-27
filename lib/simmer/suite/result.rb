@@ -60,7 +60,7 @@ module Simmer
         {
           'pass' => pass?,
           'time_in_seconds' => time_in_seconds,
-          'runner_results' => runner_results.map(&:to_h)
+          'specification_results' => runner_results.map(&:to_h)
         }
       end
 
@@ -70,8 +70,8 @@ module Simmer
         runner_results.each do |runner_result|
           name         = runner_result.name
           runner_id    = runner_result.id
-          out_contents = runner_result.pdi_client_result.execution_result.out
-          err_contents = runner_result.pdi_client_result.execution_result.err
+          out_contents = runner_result.spoon_client_result.execution_result.out
+          err_contents = runner_result.spoon_client_result.execution_result.err
 
           write_block(pdi_out_file, name, runner_id, out_contents)
           write_block(pdi_err_file, name, runner_id, err_contents)

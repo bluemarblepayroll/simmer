@@ -14,21 +14,23 @@ module Simmer
     class Result
       extend Forwardable
 
-      attr_reader :id, :judge_result, :name, :pdi_client_result
+      attr_reader :id, :judge_result, :specification, :spoon_client_result
 
-      def_delegators :pdi_client_result, :time_in_seconds
+      def_delegators :spoon_client_result, :time_in_seconds
 
-      def initialize(id, judge_result, name, pdi_client_result)
-        @id                = id
-        @judge_result      = judge_result
-        @name              = name.to_s
-        @pdi_client_result = pdi_client_result
+      def_delegators :specification, :name
+
+      def initialize(id, judge_result, specification, spoon_client_result)
+        @id                  = id.to_s
+        @judge_result        = judge_result
+        @specification       = specification
+        @spoon_client_result = spoon_client_result
 
         freeze
       end
 
       def pass?
-        pdi_client_result&.pass? && judge_result&.pass?
+        spoon_client_result&.pass? && spoon_client_result&.pass?
       end
 
       def fail?
@@ -37,11 +39,12 @@ module Simmer
 
       def to_h
         {
-          'name' => name,
+          'name' => specification.name,
           'id' => id,
+          'path' => specification.path,
           'time_in_seconds' => time_in_seconds,
           'pass' => pass?,
-          'pdi_client_result' => pdi_client_result.to_h,
+          'spoon_client_result' => spoon_client_result.to_h,
           'judge_result' => judge_result.to_h
         }
       end

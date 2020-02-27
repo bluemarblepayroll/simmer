@@ -22,8 +22,9 @@ module Simmer
       freeze
     end
 
-    def run(specification, id: SecureRandom.uuid, config: {})
-      print(specification.name)
+    def run(specification, config: {}, id: SecureRandom.uuid)
+      print("Name: #{specification.name}")
+      print("Path: #{specification.path}")
 
       clean_db
       seed_db(specification)
@@ -31,9 +32,9 @@ module Simmer
       seed_file_system(specification)
 
       spoon_client_result = execute_spoon(specification, config)
-      judge_result = assert(specification, spoon_client_result)
+      judge_result        = assert(specification, spoon_client_result)
 
-      Result.new(id, judge_result, specification.name, spoon_client_result).tap do |result|
+      Result.new(id, judge_result, specification, spoon_client_result).tap do |result|
         msg = result.pass? ? 'PASS' : 'FAIL'
         print_waiting('Done', 'Final verdict')
         print(msg)

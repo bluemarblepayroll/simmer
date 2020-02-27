@@ -78,7 +78,10 @@ module Simmer
     def specifications(path)
       path = path.to_s.empty? ? configuration.tests_dir : path
 
-      Util::YamlReader.new.all(path).values.map { |config| Specification.make(config) }
+      Util::YamlReader.new.all(path).map do |file, config|
+        config = (config || {}).merge(path: file)
+        Specification.make(config)
+      end
     end
 
     def database

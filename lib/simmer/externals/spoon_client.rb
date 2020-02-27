@@ -42,7 +42,7 @@ module Simmer
         begin
           time_in_seconds = Benchmark.measure do
             execution_result = execute!(specification, config)
-          end.real
+          end.real.round(2)
         rescue Pdi::Spoon::PanError, Pdi::Spoon::KitchenError => e
           return Result.new(
             message: "PDI execution returned an error: #{e.class.name} (#{e.execution.code})",

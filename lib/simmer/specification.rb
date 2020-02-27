@@ -15,14 +15,16 @@ module Simmer
   class Specification
     acts_as_hashable
 
-    attr_reader :act, :assert, :name, :stage
+    attr_reader :act, :assert, :name, :path, :stage
 
-    def initialize(act: {}, assert: {}, name:, stage: {})
+    def initialize(act: {}, assert: {}, name:, path:, stage: {})
       raise ArgumentError, 'name is required' if name.to_s.empty?
+      raise ArgumentError, 'path is required' if path.to_s.empty?
 
       @act    = Act.make(act)
       @assert = Assert.make(assert)
       @name   = name.to_s
+      @path   = path.to_s
       @stage  = Stage.make(stage)
 
       freeze
