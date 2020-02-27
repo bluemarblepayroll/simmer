@@ -5,10 +5,10 @@ require './lib/simmer/version'
 Gem::Specification.new do |s|
   s.name        = 'simmer'
   s.version     = Simmer::VERSION
-  s.summary     = 'Put in a summary'
+  s.summary     = 'Pentaho Data Integration Automated Test Suite'
 
   s.description = <<-DESCRIPTION
-    Put in a description.
+    Provides a harness for testing Pentaho Data Integration jobs and transformations.
   DESCRIPTION
 
   s.authors     = ['Matthew Ruggio']

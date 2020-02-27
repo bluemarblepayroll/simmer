@@ -31,6 +31,7 @@ require_relative 'simmer/util'
 # Core code
 require_relative 'simmer/suite'
 
+# Entrypoint to the library
 module Simmer
   DEFAULT_CONFIG_PATH = File.join('config', 'simmer.yaml')
   DEFAULT_RESULTS_DIR = 'results'

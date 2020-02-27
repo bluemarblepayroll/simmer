@@ -18,8 +18,8 @@ module Simmer
 
       def_delegators :pdi_client_result, :time_in_seconds
 
-      def initialize(judge_result, name, pdi_client_result)
-        @id                = SecureRandom.uuid
+      def initialize(id, judge_result, name, pdi_client_result)
+        @id                = id
         @judge_result      = judge_result
         @name              = name.to_s
         @pdi_client_result = pdi_client_result

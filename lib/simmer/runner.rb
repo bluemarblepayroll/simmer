@@ -12,30 +12,30 @@ require_relative 'runner/result'
 
 module Simmer
   class Runner
-    attr_reader :db_client, :out, :pdi_client, :s3_client
+    attr_reader :database, :file_system, :out, :spoon_client
 
-    def initialize(db_client:, out:, pdi_client:, s3_client:)
-      @db_client  = db_client
-      @pdi_client = pdi_client
-      @out        = out
-      @s3_client  = s3_client
-      @judge      = Judge.new(db_client)
+    def initialize(database:, file_system:, out:, spoon_client:)
+      @database     = database
+      @file_system  = file_system
+      @judge        = Judge.new(database)
+      @out          = out
+      @spoon_client = spoon_client
 
       freeze
     end
 
-    def run(specification, config: {})
+    def run(specification, id: SecureRandom.uuid, config: {})
       print(specification.name)
 
       clean_db
       seed_db(specification)
-      clean_s3
-      seed_s3(specification)
+      clean_file_system
+      seed_file_system(specification)
 
-      pdi_client_result = execute_pdi(specification, config)
-      judge_result      = assert(specification, pdi_client_result)
+      spoon_client_result = execute_spoon(specification, config)
+      judge_result = assert(specification, spoon_client_result)
 
-      Result.new(judge_result, specification.name, pdi_client_result).tap do |result|
+      Result.new(id, judge_result, specification.name, spoon_client_result).tap do |result|
         msg = result.pass? ? 'PASS' : 'FAIL'
         print_waiting('Done', 'Final verdict')
         print(msg)
@@ -48,7 +48,7 @@ module Simmer
 
     def clean_db
       print_waiting('Stage', 'Cleaning database')
-      count = db_client.clean!
+      count = database.clean!
       print("#{count} table(s) emptied")
 
       count
@@ -56,46 +56,46 @@ module Simmer
 
     def seed_db(specification)
       print_waiting('Stage', 'Seeding database')
-      count = db_client.seed!(specification)
+      count = database.seed!(specification)
       print("#{count} record(s) inserted")
 
       count
     end
 
-    def clean_s3
-      print_waiting('Stage', 'Cleaning S3')
-      count = s3_client.clean!
+    def clean_file_system
+      print_waiting('Stage', 'Cleaning File System')
+      count = file_system.clean
       print("#{count} file(s) deleted")
 
       count
     end
 
-    def seed_s3(specification)
-      print_waiting('Stage', 'Seeding S3')
-      count = s3_client.seed!(specification)
+    def seed_file_system(specification)
+      print_waiting('Stage', 'Seeding File System')
+      count = file_system.write(specification)
       print("#{count} file(s) uploaded")
 
       count
     end
 
-    def execute_pdi(specification, config)
-      print_waiting('Act', 'Executing PDI')
-      pdi_client_result = pdi_client.run(specification, config)
-      msg = pdi_client_result.pass? ? 'Pass' : 'Fail'
+    def execute_spoon(specification, config)
+      print_waiting('Act', 'Executing Spoon')
+      spoon_client_result = spoon_client.run(specification, config)
+      msg = spoon_client_result.pass? ? 'Pass' : 'Fail'
       print(msg)
 
-      pdi_client_result
+      spoon_client_result
     end
 
-    def assert(specification, pdi_client_result)
+    def assert(specification, spoon_client_result)
       print_waiting('Assert', 'Checking results')
 
-      if pdi_client_result.fail?
+      if spoon_client_result.fail?
         print('Skipped')
         return nil
       end
 
-      output       = pdi_client_result.execution_result.out
+      output       = spoon_client_result.execution_result.out
       judge_result = judge.assert(specification, output)
       msg          = judge_result.pass? ? 'Pass' : 'Fail'
 

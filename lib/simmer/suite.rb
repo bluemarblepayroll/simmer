@@ -7,25 +7,18 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'db_client'
+require_relative 'externals'
 require_relative 'fixture_set'
-require_relative 'pdi_client'
 require_relative 'runner'
-require_relative 's3_client'
 require_relative 'session'
 require_relative 'specification'
-require_relative 'spoon_mock'
 
 module Simmer
   class Suite
     # Configuration Keys
-    BUCKET_KEY        = 's3.bucket'
-    DB_KEY            = 'db'
-    MOCK_KEY          = 'mock'
-    MOCK_ERR_KEY      = 'mock_err'
-    PDI_KEY           = 'pdi'
-    S3_ENCRYPTION_KEY = 's3.encryption'
-    S3_KEY            = 's3'
+    AWS_FILE_SYSTEM_KEY = :aws_file_system
+    MYSQL_DATABASE_KEY  = :mysql_database
+    SPOON_CLIENT_KEY    = :spoon_client
 
     # Paths
     FILES    = 'files'
@@ -65,7 +58,14 @@ module Simmer
           Array(path)
         end
 
-      files.map { |file| Specification.from_file(file) }
+      files.map { |file| load_specification(file) }
+    end
+
+    def load_specification(path)
+      contents = File.read(path)
+      config   = YAML.safe_load(contents)
+
+      Specification.make(config)
     end
 
     def session
@@ -79,54 +79,11 @@ module Simmer
 
     def runner
       Runner.new(
-        db_client: db_client,
+        database: database,
+        file_system: file_system,
         out: out,
-        pdi_client: pdi_client,
-        s3_client: s3_client
+        spoon_client: spoon_client
       )
-    end
-
-    def mysql2_client
-      config = (get(DB_KEY) || {}).symbolize_keys
-
-      Mysql2::Client.new(config)
-    end
-
-    def db_client
-      DbClient.new(mysql2_client, fixture_set)
-    end
-
-    def aws_s3_bucket
-      config = (get(S3_KEY) || {}).symbolize_keys
-
-      client = Aws::S3::Client.new(
-        access_key_id: config[:access_key_id],
-        secret_access_key: config[:secret_access_key],
-        region: config[:region]
-      )
-
-      bucket = get(BUCKET_KEY).to_s
-
-      Aws::S3::Bucket.new(name: bucket, client: client)
-    end
-
-    def s3_client
-      S3Client.new(aws_s3_bucket, get(S3_ENCRYPTION_KEY))
-    end
-
-    def spoon
-      if get(MOCK_KEY)
-        SpoonMock.new
-      elsif get(MOCK_ERR_KEY)
-        SpoonMock.new(false)
-      else
-        config = (get(PDI_KEY) || {}).symbolize_keys
-        Pdi::Spoon.new(config)
-      end
-    end
-
-    def pdi_client
-      PdiClient.new(files_dir, spoon)
     end
 
     def get(key)
@@ -149,6 +106,18 @@ module Simmer
       fixtures_config = Util::YamlDirSmash.new(fixtures_dir)
 
       FixtureSet.new(fixtures_config.read)
+    end
+
+    def database
+      Externals::MysqlDatabase.new(get(MYSQL_DATABASE_KEY), fixture_set)
+    end
+
+    def file_system
+      Externals::AwsFileSystem.new(get(AWS_FILE_SYSTEM_KEY))
+    end
+
+    def spoon_client
+      Externals::SpoonClient.new(get(SPOON_CLIENT_KEY), files_dir)
     end
   end
 end

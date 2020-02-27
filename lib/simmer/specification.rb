@@ -15,15 +15,6 @@ module Simmer
   class Specification
     acts_as_hashable
 
-    class << self
-      def from_file(path)
-        contents = File.read(path)
-        config   = YAML.safe_load(contents)
-
-        make(config)
-      end
-    end
-
     attr_reader :act, :assert, :name, :stage
 
     def initialize(act: {}, assert: {}, name:, stage: {})

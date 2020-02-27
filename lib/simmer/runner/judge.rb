@@ -14,12 +14,12 @@ require_relative 'judge/result'
 module Simmer
   class Runner
     class Judge
-      attr_reader :db_client
+      attr_reader :database
 
-      def initialize(db_client)
-        raise ArgumentError, 'db_client is required' unless db_client
+      def initialize(database)
+        raise ArgumentError, 'database is required' unless database
 
-        @db_client = db_client
+        @database = database
 
         freeze
       end
@@ -56,7 +56,7 @@ module Simmer
       def table_assert(assertion)
         table_name          = assertion.name
         fields              = assertion.keys
-        actual_records      = db_client.records(table_name, fields)
+        actual_records      = database.records(table_name, fields)
         actual_record_set   = Util::RecordSet.new(actual_records)
         expected_record_set = assertion.record_set
 

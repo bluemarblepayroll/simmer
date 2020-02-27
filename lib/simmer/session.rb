@@ -57,9 +57,11 @@ module Simmer
     end
 
     def run_single_spec(specification, index, count)
-      out.puts("Test #{index} of #{count}")
+      id = SecureRandom.uuid
 
-      runner.run(specification, config: config).tap do
+      out.puts("Test #{index} of #{count}: #{id}")
+
+      runner.run(specification, id: id, config: config).tap do
         print_line
       end
     end
