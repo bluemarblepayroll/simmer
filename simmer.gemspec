@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/bluemarblepayroll/simmer'
   s.license     = 'MIT'
 
-  s.required_ruby_version = '>= 2.3.8'
+  s.required_ruby_version = '>= 2.4.6'
 
   s.add_dependency('acts_as_hashable', '~>1')
   s.add_dependency('aws-sdk-s3', '~>1.6')
