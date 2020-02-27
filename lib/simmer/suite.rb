@@ -7,117 +7,71 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'externals'
-require_relative 'fixture_set'
-require_relative 'runner'
-require_relative 'session'
-require_relative 'specification'
+require_relative 'suite/result'
 
 module Simmer
   class Suite
-    # Configuration Keys
-    AWS_FILE_SYSTEM_KEY = :aws_file_system
-    MYSQL_DATABASE_KEY  = :mysql_database
-    SPOON_CLIENT_KEY    = :spoon_client
-
-    # Paths
-    FILES    = 'files'
-    FIXTURES = 'fixtures'
-    TESTS    = 'tests'
-
-    attr_reader :config, :out, :results_dir, :spec_dir
-
-    def initialize(config:, out:, results_dir:, spec_dir:)
+    def initialize(
+      config:,
+      out:,
+      resolver: Objectable.resolver,
+      results_dir:,
+      runner:
+    )
       @config      = config || {}
       @out         = out
-      @resolver    = Objectable.resolver
+      @resolver    = resolver
       @results_dir = results_dir
-      @spec_dir    = spec_dir
+      @runner      = runner
 
       freeze
     end
 
-    def run(path)
-      specifications = resolve_specifications(path)
+    def run(specifications)
+      runner_results = run_all_specs(specifications)
 
-      session.run(specifications)
+      Result.new(runner_results).tap do |result|
+        if result.pass?
+          out.puts('Suite ended successfully')
+        else
+          out.puts('Suite ended but was not successful')
+        end
+
+        result.write!(results_dir)
+
+        out.puts("Results can be viewed at #{results_dir}")
+      end
     end
 
     private
 
-    attr_reader :resolver
+    attr_reader :config, :out, :results_dir, :resolver, :runner
 
-    def resolve_specifications(path)
-      path = path.to_s.empty? ? tests_dir : path
+    def run_all_specs(specifications)
+      out.puts('Simmer suite started')
 
-      files =
-        if File.directory?(path)
-          glob = File.join(path, '**', '*_spec.yaml')
-          Dir[glob].to_a
-        else
-          Array(path)
-        end
+      count = specifications.length
 
-      files.map { |file| load_specification(file) }
+      out.puts("Running #{count} specification(s)")
+      print_line
+
+      specifications.map.with_index(1) do |specification, index|
+        run_single_spec(specification, index, count)
+      end
     end
 
-    def load_specification(path)
-      contents = File.read(path)
-      config   = YAML.safe_load(contents)
+    def run_single_spec(specification, index, count)
+      id = SecureRandom.uuid
 
-      Specification.make(config)
+      out.puts("Test #{index} of #{count}: #{id}")
+
+      runner.run(specification, id: id, config: config).tap do
+        print_line
+      end
     end
 
-    def session
-      Session.new(
-        config: config,
-        out: out,
-        results_dir: results_dir,
-        runner: runner
-      )
-    end
-
-    def runner
-      Runner.new(
-        database: database,
-        file_system: file_system,
-        out: out,
-        spoon_client: spoon_client
-      )
-    end
-
-    def get(key)
-      resolver.get(config, key)
-    end
-
-    def tests_dir
-      File.join(spec_dir, TESTS)
-    end
-
-    def fixtures_dir
-      File.join(spec_dir, FIXTURES)
-    end
-
-    def files_dir
-      File.join(spec_dir, FILES)
-    end
-
-    def fixture_set
-      fixtures_config = Util::YamlDirSmash.new(fixtures_dir)
-
-      FixtureSet.new(fixtures_config.read)
-    end
-
-    def database
-      Externals::MysqlDatabase.new(get(MYSQL_DATABASE_KEY), fixture_set)
-    end
-
-    def file_system
-      Externals::AwsFileSystem.new(get(AWS_FILE_SYSTEM_KEY))
-    end
-
-    def spoon_client
-      Externals::SpoonClient.new(get(SPOON_CLIENT_KEY), files_dir)
+    def print_line
+      out.puts('-' * 60)
     end
   end
 end

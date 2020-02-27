@@ -12,8 +12,6 @@ require_relative 'runner/result'
 
 module Simmer
   class Runner
-    attr_reader :database, :file_system, :out, :spoon_client
-
     def initialize(database:, file_system:, out:, spoon_client:)
       @database     = database
       @file_system  = file_system
@@ -44,7 +42,7 @@ module Simmer
 
     private
 
-    attr_reader :judge
+    attr_reader :database, :file_system, :judge, :out, :spoon_client
 
     def clean_db
       print_waiting('Stage', 'Cleaning database')

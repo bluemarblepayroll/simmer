@@ -16,7 +16,7 @@ module Simmer
       MOCK_KEY     = :mock
       MOCK_ERR_KEY = :mock_err
 
-      attr_reader :files_dir, :spoon
+      private_constant :MOCK_KEY, :MOCK_ERR_KEY
 
       def initialize(config, files_dir)
         @files_dir = files_dir
@@ -58,6 +58,8 @@ module Simmer
       end
 
       private
+
+      attr_reader :files_dir, :spoon
 
       def execute!(specification, config)
         act = specification.act

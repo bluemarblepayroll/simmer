@@ -10,7 +10,7 @@
 module Simmer
   module Externals
     class AwsFileSystem
-      def initialize(config)
+      def initialize(config, files_dir)
         config = (config || {}).symbolize_keys
 
         client = Aws::S3::Client.new(
@@ -21,6 +21,7 @@ module Simmer
 
         @bucket     = Aws::S3::Bucket.new(name: config[:bucket], client: client)
         @encryption = config[:encryption]
+        @files_dir  = files_dir
 
         freeze
       end
@@ -29,7 +30,7 @@ module Simmer
         s3_files = specification.stage.s3_files
 
         s3_files.each do |s3_file|
-          path = File.join('spec', 'files', s3_file.path)
+          path = File.join(files_dir, s3_file.path)
 
           write_single(s3_file.key, path)
         end
@@ -47,7 +48,7 @@ module Simmer
 
       private
 
-      attr_reader :bucket, :encryption
+      attr_reader :bucket, :encryption, :files_dir
 
       def write_single(key, local_path)
         File.open(local_path, 'rb') do |file|

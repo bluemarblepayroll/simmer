@@ -12,14 +12,13 @@ require_relative 'mysql_database/sql_fixture'
 module Simmer
   module Externals
     class MysqlDatabase
-      attr_reader :client, :fixture_set, :table_names
-
       def initialize(config, fixture_set)
         config = (config || {}).symbolize_keys
 
-        @client      = Mysql2::Client.new(config)
-        @fixture_set = fixture_set
-        @table_names = retrieve_table_names
+        @client        = Mysql2::Client.new(config)
+        @fixture_set   = fixture_set
+        exclude_tables = Array(config[:exclude_tables]).map(&:to_s)
+        @table_names   = retrieve_table_names - exclude_tables
 
         freeze
       end
@@ -47,6 +46,8 @@ module Simmer
       end
 
       private
+
+      attr_reader :client, :fixture_set, :table_names
 
       def sql_select_params(columns)
         Array(columns).any? ? Array(columns).map { |c| client.escape(c) }.join(',') : '*'
@@ -94,7 +95,7 @@ module Simmer
         schema = client.escape(client.query_options[:database].to_s)
         sql    = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '#{schema}'"
 
-        client.query(sql).to_a.map { |v| v['TABLE_NAME'] }
+        client.query(sql).to_a.map { |v| v['TABLE_NAME'].to_s }
       end
     end
   end

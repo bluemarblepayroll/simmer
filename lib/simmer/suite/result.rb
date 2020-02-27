@@ -8,8 +8,12 @@
 #
 
 module Simmer
-  class Session
+  class Suite
     class Result
+      DATA_FILE    = 'data.yaml'
+      PDI_OUT_FILE = 'pdi_out.txt'
+      PDI_ERR_FILE = 'pdi_err.txt'
+
       attr_reader :runner_results
 
       def initialize(runner_results = [])
@@ -35,9 +39,9 @@ module Simmer
       def write!(path)
         FileUtils.mkdir_p(path)
 
-        data_path = File.join(path, 'data.yaml')
-        pdi_out = File.join(path, 'pdi_out.txt')
-        pdi_err = File.join(path, 'pdi_err.txt')
+        data_path = File.join(path, DATA_FILE)
+        pdi_out   = File.join(path, PDI_OUT_FILE)
+        pdi_err   = File.join(path, PDI_ERR_FILE)
 
         IO.write(data_path, to_h.to_yaml)
 
