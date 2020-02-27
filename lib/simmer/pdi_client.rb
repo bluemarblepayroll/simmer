@@ -11,14 +11,12 @@ require_relative 'pdi_client/result'
 
 module Simmer
   class PdiClient
-    attr_reader :files_path,
+    attr_reader :files_dir,
                 :spoon
 
-    def initialize(config, files_path)
-      config = (config || {}).symbolize_keys
-
-      @spoon      = Pdi::Spoon.new(config)
-      @files_path = files_path
+    def initialize(files_dir, spoon)
+      @files_dir = files_dir
+      @spoon     = spoon
 
       freeze
     end
@@ -53,7 +51,7 @@ module Simmer
       spoon.run(
         repository: act.repository,
         name: act.name,
-        params: act.compiled_params(files_path, config),
+        params: act.compiled_params(files_dir, config),
         type: act.type
       )
     end

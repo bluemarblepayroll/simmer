@@ -15,19 +15,16 @@ module Simmer
                 :fixture_set,
                 :table_names
 
-    def initialize(config, fixture_set)
-      config = (config || {}).symbolize_keys
-
-      @client      = Mysql2::Client.new(config)
+    def initialize(client, fixture_set)
+      @client      = client
       @fixture_set = fixture_set
       @table_names = retrieve_table_names
 
       freeze
     end
 
-    def records(table, columns = nil)
-      columns = Array(columns).any? ? Array(columns).map { |c| client.escape(c) }.join(',') : '*'
-      query   = "SELECT #{columns} FROM #{table}"
+    def records(table, columns = [])
+      query = "SELECT #{sql_select_params(columns)} FROM #{table}"
 
       client.query(query).to_a
     end
@@ -49,6 +46,10 @@ module Simmer
     end
 
     private
+
+    def sql_select_params(columns)
+      Array(columns).any? ? Array(columns).map { |c| client.escape(c) }.join(',') : '*'
+    end
 
     def seed_sql_statements(specification)
       fixture_names = specification.stage.fixtures

@@ -9,19 +9,11 @@
 
 module Simmer
   class S3Client
-    attr_reader :bucket, :client, :encryption
+    attr_reader :bucket, :encryption
 
-    def initialize(config)
-      config = (config || {}).symbolize_keys
-
-      @client = Aws::S3::Client.new(
-        access_key_id: config[:access_key_id],
-        secret_access_key: config[:secret_access_key],
-        region: config[:region]
-      )
-
-      @bucket     = Aws::S3::Bucket.new(name: config[:bucket], client: client)
-      @encryption = config[:encryption]
+    def initialize(bucket, encryption)
+      @bucket     = bucket
+      @encryption = encryption
 
       freeze
     end
