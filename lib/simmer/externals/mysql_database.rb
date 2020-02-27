@@ -12,8 +12,13 @@ require_relative 'mysql_database/sql_fixture'
 module Simmer
   module Externals
     class MysqlDatabase
+      DATABASE_SUFFIX = 'test'
+
       def initialize(config, fixture_set)
         config = (config || {}).symbolize_keys
+
+        database = config[:database].to_s
+        assert_database_name(database)
 
         @client        = Mysql2::Client.new(config)
         @fixture_set   = fixture_set
@@ -96,6 +101,12 @@ module Simmer
         sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '#{schema}'"
 
         client.query(sql).to_a.map { |v| v['TABLE_NAME'].to_s }
+      end
+
+      def assert_database_name(name)
+        return if name.end_with?(DATABASE_SUFFIX)
+
+        raise ArgumentError, "database (#{name}) must end in #{DATABASE_SUFFIX}"
       end
     end
   end

@@ -10,6 +10,10 @@
 module Simmer
   module Externals
     class AwsFileSystem
+      BUCKET_SUFFIX = 'test'
+
+      private_constant :BUCKET_SUFFIX
+
       def initialize(config, files_dir)
         config = (config || {}).symbolize_keys
 
@@ -19,7 +23,10 @@ module Simmer
           region: config[:region]
         )
 
-        @bucket     = Aws::S3::Bucket.new(name: config[:bucket], client: client)
+        bucket_name = config[:bucket].to_s
+        assert_bucket_name(bucket_name)
+
+        @bucket     = Aws::S3::Bucket.new(name: bucket_name, client: client)
         @encryption = config[:encryption]
         @files_dir  = files_dir
 
@@ -59,6 +66,12 @@ module Simmer
         end
 
         nil
+      end
+
+      def assert_bucket_name(name)
+        return if name.end_with?(BUCKET_SUFFIX)
+
+        raise ArgumentError, "bucket (#{name}) must end in #{BUCKET_SUFFIX}"
       end
     end
   end
