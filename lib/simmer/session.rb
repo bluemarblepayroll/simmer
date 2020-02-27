@@ -7,6 +7,7 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+require_relative 'session/reporter'
 require_relative 'session/result'
 
 module Simmer
@@ -37,7 +38,7 @@ module Simmer
           out.puts('Suite ended but was not successful')
         end
 
-        result.write!(results_dir)
+        Reporter.new(result).write!(results_dir)
 
         out.puts("Results can be viewed at #{results_dir}")
       end
