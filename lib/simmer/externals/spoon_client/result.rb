@@ -17,7 +17,7 @@ module Simmer
         def initialize(message: '', execution_result:, time_in_seconds:)
           @message          = message
           @execution_result = execution_result
-          @time_in_seconds  = time_in_seconds
+          @time_in_seconds  = (time_in_seconds || 0).round(2)
 
           freeze
         end

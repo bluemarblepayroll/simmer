@@ -36,14 +36,14 @@ require_relative 'simmer/suite'
 module Simmer
   DEFAULT_CONFIG_PATH = File.join('config', 'simmer.yaml')
   DEFAULT_RESULTS_DIR = 'results'
-  DEFAULT_SPEC_DIR    = 'simmer'
+  DEFAULT_SIMMER_DIR  = 'simmer'
   class << self
     def run(path)
       Suite.new(
         out: $stdout,
         config_path: DEFAULT_CONFIG_PATH,
         results_dir: DEFAULT_RESULTS_DIR,
-        spec_dir: DEFAULT_SPEC_DIR
+        simmer_dir: DEFAULT_SIMMER_DIR
       ).run(path)
     end
   end

@@ -29,7 +29,7 @@ module Simmer
       end
 
       def pass?
-        spoon_client_result&.pass? && spoon_client_result&.pass?
+        judge_result&.pass? && spoon_client_result&.pass?
       end
 
       def fail?

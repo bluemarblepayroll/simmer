@@ -59,6 +59,8 @@ module Simmer
       attr_reader :bucket, :encryption, :files_dir
 
       def write_single(dest, src)
+        src = File.expand_path(src)
+
         File.open(src, 'rb') do |file|
           bucket.object(dest).put(
             body: file,

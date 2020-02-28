@@ -19,11 +19,11 @@ module Simmer
   class Suite
     attr_reader :configuration, :session
 
-    def initialize(out:, config_path:, results_dir:, spec_dir:)
+    def initialize(config_path:, out:, results_dir:, simmer_dir:)
       @configuration = Configuration.new(
         config_path: config_path,
         results_dir: results_dir,
-        spec_dir: spec_dir
+        simmer_dir: simmer_dir
       )
 
       runner = Runner.new(

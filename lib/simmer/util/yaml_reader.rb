@@ -29,6 +29,7 @@ module Simmer
       end
 
       def read(path)
+        path     = File.expand_path(path)
         contents = File.read(path)
 
         YAML.safe_load(contents) || {}

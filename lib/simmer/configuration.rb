@@ -34,13 +34,13 @@ module Simmer
       config_path:,
       resolver: Objectable.resolver,
       results_dir:,
-      spec_dir:,
+      simmer_dir:,
       yaml_reader: Util::YamlReader.new
     )
       @config      = yaml_reader.read(config_path)
       @resolver    = resolver
       @results_dir = results_dir
-      @spec_dir    = spec_dir
+      @simmer_dir  = simmer_dir
       @yaml_reader = yaml_reader
 
       freeze
@@ -59,15 +59,15 @@ module Simmer
     end
 
     def tests_dir
-      File.join(spec_dir, TESTS)
+      File.join(simmer_dir, TESTS)
     end
 
     def fixtures_dir
-      File.join(spec_dir, FIXTURES)
+      File.join(simmer_dir, FIXTURES)
     end
 
     def files_dir
-      File.join(spec_dir, FILES)
+      File.join(simmer_dir, FILES)
     end
 
     def fixture_set
@@ -80,7 +80,7 @@ module Simmer
 
     attr_reader :resolver,
                 :results_dir,
-                :spec_dir,
+                :simmer_dir,
                 :yaml_reader
 
     def get(key)

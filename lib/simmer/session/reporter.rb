@@ -23,17 +23,13 @@ module Simmer
         freeze
       end
 
-      def write!(path)
-        FileUtils.mkdir_p(path)
+      def write!(dir)
+        dir = setup_directory(dir)
 
-        data_path = File.join(path, DATA_FILE)
-        pdi_out   = File.join(path, PDI_OUT_FILE)
-        pdi_err   = File.join(path, PDI_ERR_FILE)
+        IO.write(data_path(dir), session_result.to_h.to_yaml)
 
-        IO.write(data_path, session_result.to_h.to_yaml)
-
-        pdi_out_file = File.open(pdi_out, 'w')
-        pdi_err_file = File.open(pdi_err, 'w')
+        pdi_out_file = File.open(pdi_out_path(dir), 'w')
+        pdi_err_file = File.open(pdi_err_path(dir), 'w')
 
         write_part(session_result.runner_results, pdi_out_file, pdi_err_file)
 
@@ -54,6 +50,24 @@ module Simmer
       private
 
       attr_reader :session_result
+
+      def data_path(dir)
+        File.join(dir, DATA_FILE)
+      end
+
+      def pdi_out_path(dir)
+        File.join(dir, PDI_OUT_FILE)
+      end
+
+      def pdi_err_path(dir)
+        File.join(dir, PDI_ERR_FILE)
+      end
+
+      def setup_directory(dir)
+        File.expand_path(dir).tap do |expanded_dir|
+          FileUtils.mkdir_p(expanded_dir)
+        end
+      end
 
       def write_part(runner_results, pdi_out_file, pdi_err_file)
         runner_results.each do |runner_result|
