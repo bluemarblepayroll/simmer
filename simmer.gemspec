@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.email       = ['mruggio@bluemarblepayroll.com']
   s.files       = `git ls-files`.split("\n")
   s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
+  s.executables = %w[simmer]
   s.homepage    = 'https://github.com/bluemarblepayroll/simmer'
   s.license     = 'MIT'
 
