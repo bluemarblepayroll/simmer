@@ -9,6 +9,7 @@
 
 module Simmer
   module Externals
+    # Provides the implementation for using AWS S3 as a destination file store.
     class AwsFileSystem
       BUCKET_SUFFIX = 'test'
 

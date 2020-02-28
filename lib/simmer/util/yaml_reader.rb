@@ -9,6 +9,8 @@
 
 module Simmer
   module Util
+    # Understands how to read YAML.  You can utilize this tool to recursively read an entire
+    # directory of YAML files and combine them into one YAML file, or simply read one YAML file.
     class YamlReader
       EXTENSIONS = %w[yml yaml].freeze
 

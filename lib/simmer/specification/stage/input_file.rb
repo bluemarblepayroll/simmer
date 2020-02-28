@@ -10,6 +10,9 @@
 module Simmer
   class Specification
     class Stage
+      # Describes a file needing to be staged for a specification to execute properly.
+      # It understands where the file exists in the local repository and where to transfer it
+      # to.
       class InputFile
         acts_as_hashable
 

@@ -11,6 +11,7 @@ require_relative 'judge/result'
 require_relative 'specification'
 
 module Simmer
+  # Runs all assertions and reports back the results.
   class Judge
     attr_reader :database
 

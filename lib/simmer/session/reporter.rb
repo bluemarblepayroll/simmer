@@ -9,6 +9,7 @@
 
 module Simmer
   class Session
+    # Understands how to write a SessionResult instance to disk.
     class Reporter
       DATA_FILE    = 'data.yaml'
       PDI_OUT_FILE = 'pdi_out.txt'

@@ -31,3 +31,20 @@ require_relative 'simmer/util'
 
 # Core code
 require_relative 'simmer/suite'
+
+# The main entry-point API for the library.
+module Simmer
+  DEFAULT_CONFIG_PATH = File.join('config', 'simmer.yaml')
+  DEFAULT_RESULTS_DIR = 'results'
+  DEFAULT_SPEC_DIR    = 'simmer'
+  class << self
+    def run(path)
+      Suite.new(
+        out: $stdout,
+        config_path: DEFAULT_CONFIG_PATH,
+        results_dir: DEFAULT_RESULTS_DIR,
+        spec_dir: DEFAULT_SPEC_DIR
+      ).run(path)
+    end
+  end
+end

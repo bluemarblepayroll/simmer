@@ -12,6 +12,7 @@ require_relative 'spoon_client/result'
 
 module Simmer
   module Externals
+    # Wraps up Pdi::Spoon at a higher-level for Simmer to consume.
     class SpoonClient
       MOCK_KEY     = :mock
       MOCK_ERR_KEY = :mock_err

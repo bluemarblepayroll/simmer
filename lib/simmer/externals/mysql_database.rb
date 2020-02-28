@@ -11,6 +11,7 @@ require_relative 'mysql_database/sql_fixture'
 
 module Simmer
   module Externals
+    # Provides a wrapper around mysql2 for Simmer.
     class MysqlDatabase
       DATABASE_SUFFIX = 'test'
 

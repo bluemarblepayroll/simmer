@@ -13,6 +13,7 @@ module Simmer
   class Specification
     class Assert
       class Assertions
+        # Describes an expected state of a database table.
         class Table
           acts_as_hashable
 

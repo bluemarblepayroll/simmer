@@ -8,4 +8,4 @@
 
 require 'simmer'
 
-exit 1 unless Simmer::Suite.new.run(ARGV[0]).pass?
+exit 1 unless Simmer.run(ARGV[0]).pass?

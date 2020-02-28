@@ -15,6 +15,7 @@ require_relative 'assertions/table'
 module Simmer
   class Specification
     class Assert
+      # Factory class for assertions.
       class Assertions
         acts_as_hashable_factory
 

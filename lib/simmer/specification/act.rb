@@ -11,6 +11,7 @@ require_relative 'act/params'
 
 module Simmer
   class Specification
+    # Describes everything necessary to execute Pdi::Spoon.
     class Act
       extend Forwardable
       acts_as_hashable

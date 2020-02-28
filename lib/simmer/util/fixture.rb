@@ -9,6 +9,8 @@
 
 module Simmer
   module Util
+    # A fixture is a database record that can be inserted in the Stage phase of a specification
+    # execution.
     class Fixture
       acts_as_hashable
 

@@ -9,6 +9,8 @@
 
 module Simmer
   module Util
+    # Wraps up Objectable so it can be plugged into Stringento so we can use Objectable
+    # as an object resolver.
     class Resolver
       attr_reader :objectable_resolver
 

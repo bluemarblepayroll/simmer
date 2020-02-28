@@ -11,6 +11,7 @@ require_relative 'session/reporter'
 require_relative 'session/result'
 
 module Simmer
+  # Runs a collection of specifications and then writes down the results to disk.
   class Session
     def initialize(
       config:,

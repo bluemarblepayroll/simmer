@@ -11,6 +11,7 @@ require_relative 'fixture'
 
 module Simmer
   module Util
+    # Hydrate a collection of Fixture instances from configuration.
     class FixtureSet
       def initialize(config = {})
         @fixtures_by_name = config.each_with_object({}) do |(name, fixture_config), memo|

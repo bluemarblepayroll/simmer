@@ -10,6 +10,8 @@
 module Simmer
   class Specification
     class Act
+      # Understands how to compile a list of files and key value pairs for Pdi::Spoon
+      # consumption.
       class Params
         acts_as_hashable
 

@@ -12,6 +12,7 @@ require_relative 'specification/assert'
 require_relative 'specification/stage'
 
 module Simmer
+  # Describes a specification at the highest of levels.
   class Specification
     acts_as_hashable
 

@@ -11,6 +11,7 @@ require_relative 'stage/input_file'
 
 module Simmer
   class Specification
+    # Describes the state necessary to exist before Spoon can be executed successfully.
     class Stage
       acts_as_hashable
 

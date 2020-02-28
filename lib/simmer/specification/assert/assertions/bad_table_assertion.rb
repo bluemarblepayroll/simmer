@@ -11,6 +11,7 @@ module Simmer
   class Specification
     class Assert
       class Assertions
+        # Describes when a database table does not meet expectations.
         class BadTableAssertion
           attr_reader :name, :expected_record_set, :actual_record_set
 

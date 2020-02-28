@@ -9,6 +9,7 @@
 
 module Simmer
   class Runner
+    # Return object from a Runner#run call.
     class Result
       extend Forwardable
 

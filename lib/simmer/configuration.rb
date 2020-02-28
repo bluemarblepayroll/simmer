@@ -8,6 +8,8 @@
 #
 
 module Simmer
+  # Reads in the Simmer configuration file and options and provides it to the rest of the
+  # Simmer implementation.
   class Configuration
     # Configuration Keys
     AWS_FILE_SYSTEM_KEY = :aws_file_system

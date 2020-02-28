@@ -13,6 +13,7 @@ module Simmer
   class Specification
     class Assert
       class Assertions
+        # Describes an expected state of the output (log).
         class Output
           acts_as_hashable
 

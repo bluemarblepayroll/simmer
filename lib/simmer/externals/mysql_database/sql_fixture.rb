@@ -10,6 +10,7 @@
 module Simmer
   module Externals
     class MysqlDatabase
+      # This class knows how to turn a fixture into sql.
       class SqlFixture
         extend Forwardable
 

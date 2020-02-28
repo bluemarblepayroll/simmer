@@ -10,6 +10,7 @@
 module Simmer
   module Externals
     class SpoonClient
+      # Provides a simple mock for the underlying Pdi::Spoon class.
       class Mock
         attr_reader :pass
 

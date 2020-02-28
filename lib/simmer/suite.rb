@@ -15,19 +15,11 @@ require_relative 'specification'
 
 # Entrypoint to the library
 module Simmer
+  # The main object entrypoint that brings the entire codebase together.
   class Suite
-    DEFAULT_CONFIG_PATH = File.join('config', 'simmer.yaml')
-    DEFAULT_RESULTS_DIR = 'results'
-    DEFAULT_SPEC_DIR    = 'simmer'
-
     attr_reader :configuration, :session
 
-    def initialize(
-      out: $stdout,
-      config_path: DEFAULT_CONFIG_PATH,
-      results_dir: DEFAULT_RESULTS_DIR,
-      spec_dir: DEFAULT_SPEC_DIR
-    )
+    def initialize(out:, config_path:, results_dir:, spec_dir:)
       @configuration = Configuration.new(
         config_path: config_path,
         results_dir: results_dir,

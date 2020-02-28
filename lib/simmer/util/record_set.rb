@@ -11,6 +11,8 @@ require_relative 'record'
 
 module Simmer
   module Util
+    # A less-strict comparable collection of Record instances.
+    # It does not depend on Record ordering.
     class RecordSet
       attr_reader :records
 

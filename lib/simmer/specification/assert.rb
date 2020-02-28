@@ -11,6 +11,7 @@ require_relative 'assert/assertions'
 
 module Simmer
   class Specification
+    # Describes what should be expected after a Pdi::Spoon execution.
     class Assert
       acts_as_hashable
 

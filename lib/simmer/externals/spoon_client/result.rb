@@ -10,6 +10,7 @@
 module Simmer
   module Externals
     class SpoonClient
+      # The return object from a SpoonClient#run call.
       class Result
         attr_reader :message, :execution_result, :time_in_seconds
 

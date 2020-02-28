@@ -9,6 +9,7 @@
 
 module Simmer
   class Judge
+    # The return object of a Judge#assert call.
     class Result
       attr_reader :bad_assertions
 

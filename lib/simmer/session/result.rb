@@ -9,6 +9,7 @@
 
 module Simmer
   class Session
+    # The return object for a Session#run call.
     class Result
       attr_reader :runner_results
 

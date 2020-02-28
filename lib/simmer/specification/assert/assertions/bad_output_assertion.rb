@@ -11,6 +11,7 @@ module Simmer
   class Specification
     class Assert
       class Assertions
+        # Describes when the output does not meet expectations.
         class BadOutputAssertion
           attr_reader :expected_value
 

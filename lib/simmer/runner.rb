@@ -11,6 +11,7 @@ require_relative 'judge'
 require_relative 'runner/result'
 
 module Simmer
+  # Runs a single specification.
   class Runner
     def initialize(database:, file_system:, out:, spoon_client:)
       @database     = database

@@ -9,6 +9,8 @@
 
 module Simmer
   module Util
+    # A less strict comparable hash data structure.  It does not depend on key type, value type,
+    # and key ordering.
     class Record
       extend Forwardable
 
