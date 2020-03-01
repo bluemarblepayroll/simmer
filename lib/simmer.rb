@@ -39,12 +39,16 @@ module Simmer
   DEFAULT_SIMMER_DIR  = 'simmer'
   class << self
     def run(path)
+      suite.run(path)
+    end
+
+    def suite
       Suite.new(
         out: $stdout,
         config_path: DEFAULT_CONFIG_PATH,
         results_dir: DEFAULT_RESULTS_DIR,
         simmer_dir: DEFAULT_SIMMER_DIR
-      ).run(path)
+      )
     end
   end
 end
