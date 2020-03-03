@@ -17,25 +17,21 @@ module Simmer
       private_constant :EXTENSIONS
 
       def smash(path)
-        files = all(path).values
-
-        files.each_with_object({}) do |config, memo|
-          memo.merge!(config)
-        end
-      end
-
-      def all(path)
-        expand(path).map { |file| [file, read(file)] }.to_h
+        read(path).each_with_object({}) { |file, memo| memo.merge!(file.data || {}) }
       end
 
       def read(path)
-        path     = File.expand_path(path)
-        contents = File.read(path)
-
-        YAML.safe_load(contents) || {}
+        expand(path).map { |file| OpenStruct.new(path: file, data: raw(file)) }
       end
 
       private
+
+      def raw(path)
+        path     = File.expand_path(path)
+        contents = File.read(path)
+
+        YAML.safe_load(contents)
+      end
 
       def wildcard_name
         "*.{#{EXTENSIONS.join(',')}}"
@@ -48,13 +44,14 @@ module Simmer
       def expand(path)
         path = File.expand_path(path.to_s)
 
+        # The sort will ensure it is deterministic (lexicographic by path)
         if File.directory?(path)
           glob = full_path(path)
 
           Dir[glob].to_a
         else
           Array(path)
-        end
+        end.sort
       end
     end
   end

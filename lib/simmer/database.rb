@@ -7,6 +7,4 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'util/evaluator'
-require_relative 'util/record_set'
-require_relative 'util/yaml_reader'
+require_relative 'database/fixture_set'

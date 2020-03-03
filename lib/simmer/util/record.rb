@@ -19,6 +19,8 @@ module Simmer
       def_delegators :data, :to_h
 
       def initialize(data = {})
+        data = data.respond_to?(:to_h) ? data.to_h : data
+
         @data = sorted_string_hash(data)
       end
 

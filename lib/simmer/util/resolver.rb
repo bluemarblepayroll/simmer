@@ -14,8 +14,8 @@ module Simmer
     class Resolver
       attr_reader :objectable_resolver
 
-      def initialize
-        @objectable_resolver = Objectable.resolver
+      def initialize(objectable_resolver: Objectable.resolver)
+        @objectable_resolver = objectable_resolver
 
         freeze
       end

@@ -52,8 +52,9 @@ module Simmer
     def specifications(path)
       path = path.to_s.empty? ? configuration.tests_dir : path
 
-      Util::YamlReader.new.all(path).map do |file, config|
-        config = (config || {}).merge(path: file)
+      Util::YamlReader.new.read(path).map do |file|
+        config = (file.data || {}).merge(path: file.path)
+
         Specification.make(config)
       end
     end

@@ -37,7 +37,7 @@ module Simmer
       simmer_dir:,
       yaml_reader: Util::YamlReader.new
     )
-      @config      = yaml_reader.read(config_path)
+      @config      = yaml_reader.smash(config_path)
       @resolver    = resolver
       @results_dir = results_dir
       @simmer_dir  = simmer_dir
@@ -73,7 +73,7 @@ module Simmer
     def fixture_set
       config = yaml_reader.smash(fixtures_dir)
 
-      Util::FixtureSet.new(config)
+      Database::FixtureSet.new(config)
     end
 
     private

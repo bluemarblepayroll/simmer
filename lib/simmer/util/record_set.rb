@@ -34,7 +34,7 @@ module Simmer
       end
 
       def keys
-        records.first&.keys || []
+        records.flat_map(&:keys)
       end
 
       private

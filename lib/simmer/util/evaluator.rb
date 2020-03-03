@@ -11,17 +11,16 @@ require_relative 'resolver'
 
 module Simmer
   module Util
-    # Text template renderer.  It knows how to take a string and object as an input and
-    # output a compiled string.
+    # Glues together Objectable and Stringento libraries to form a text template renderer.
     class Evaluator
-      def initialize
-        @resolver = Objectable.resolver
+      def initialize(resolver = Resolver.new)
+        @resolver = resolver
 
         freeze
       end
 
       def evaluate(string, input = {})
-        Stringento.evaluate(string, input, resolver: Resolver.new)
+        Stringento.evaluate(string, input, resolver: resolver)
       end
 
       private

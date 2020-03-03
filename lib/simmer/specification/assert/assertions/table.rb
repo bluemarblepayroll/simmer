@@ -27,18 +27,13 @@ module Simmer
           end
 
           def assert(database, _output)
+            keys                = record_set.keys
             actual_records      = database.records(name, keys)
             actual_record_set   = Util::RecordSet.new(actual_records)
 
             return nil if actual_record_set == record_set
 
             BadTableAssertion.new(name, record_set, actual_record_set)
-          end
-
-          private
-
-          def keys
-            record_set.keys
           end
         end
       end

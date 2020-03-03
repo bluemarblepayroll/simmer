@@ -10,13 +10,11 @@
 require_relative 'fixture'
 
 module Simmer
-  module Util
+  module Database
     # Hydrate a collection of Fixture instances from configuration.
     class FixtureSet
       def initialize(config = {})
-        @fixtures_by_name = config.each_with_object({}) do |(name, fixture_config), memo|
-          memo[name.to_s] = Fixture.make((fixture_config || {}).merge('name' => name))
-        end
+        @fixtures_by_name = config_to_fixures_by_name(config)
 
         freeze
       end
@@ -36,6 +34,14 @@ module Simmer
       private
 
       attr_reader :fixtures_by_name
+
+      def config_to_fixures_by_name(config)
+        (config || {}).each_with_object({}) do |(name, fixture_config), memo|
+          full_config = (fixture_config || {}).merge(name: name)
+
+          memo[name.to_s] = Fixture.make(full_config)
+        end
+      end
     end
   end
 end

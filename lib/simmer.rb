@@ -30,6 +30,7 @@ Hash.include Simmer::CoreExt::Hash
 require_relative 'simmer/util'
 
 # Core code
+require_relative 'simmer/database'
 require_relative 'simmer/suite'
 
 # The main entry-point API for the library.

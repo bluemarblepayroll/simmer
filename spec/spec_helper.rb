@@ -7,6 +7,7 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+require 'ostruct'
 require 'pry'
 
 unless ENV['DISABLE_SIMPLECOV'] == 'true'

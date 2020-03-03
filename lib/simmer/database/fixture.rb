@@ -8,7 +8,7 @@
 #
 
 module Simmer
-  module Util
+  module Database
     # A fixture is a database record that can be inserted in the Stage phase of a specification
     # execution.
     class Fixture
@@ -24,9 +24,13 @@ module Simmer
         @table  = table.to_s
       end
 
-      def to_s
-        "#{name} (#{table}) #{fields}"
+      def ==(other)
+        other.instance_of?(self.class) &&
+          fields == other.fields &&
+          name == other.name &&
+          table == other.table
       end
+      alias eql? ==
     end
   end
 end
