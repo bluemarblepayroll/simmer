@@ -12,9 +12,9 @@ act:
   type: transformation
   params:
     files:
-      - input/noc_list.csv
+      input_file: noc_list.csv
     keys:
-      code: 'I am the law!'
+      code: 'The secret code is: {codes.the_secret_one}'
 assert:
   assertions:
     - type: table

@@ -15,21 +15,15 @@ module Simmer
 
       private_constant :BUCKET_SUFFIX
 
-      def initialize(config, files_dir)
-        config = (config || {}).symbolize_keys
+      def initialize(aws_s3_client, bucket, encryption, files_dir)
+        raise ArgumentError, 'aws_s3_client is required' unless aws_s3_client
+        raise ArgumentError, 'bucket is required'        if bucket.to_s.empty?
+        assert_bucket_name(bucket)
 
-        client = Aws::S3::Client.new(
-          access_key_id: config[:access_key_id],
-          secret_access_key: config[:secret_access_key],
-          region: config[:region]
-        )
-
-        bucket_name = config[:bucket].to_s
-        assert_bucket_name(bucket_name)
-
-        @bucket     = Aws::S3::Bucket.new(name: bucket_name, client: client)
-        @encryption = config[:encryption]
-        @files_dir  = files_dir
+        @aws_s3_client = aws_s3_client
+        @bucket        = bucket.to_s
+        @encryption    = encryption
+        @files_dir     = files_dir
 
         freeze
       end
@@ -47,23 +41,33 @@ module Simmer
       end
 
       def clean
-        bucket.objects.inject(0) do |memo, object|
-          object.delete
+        response    = aws_s3_client.list_objects(bucket: bucket)
+        objects     = response.contents
+        keys        = objects.map(&:key)
+        delete_keys = keys.map { |key| { key: key } }
 
-          memo + 1
-        end
+        aws_s3_client.delete_objects(
+          bucket: bucket,
+          delete: {
+            objects: delete_keys
+          }
+        )
+
+        delete_keys.length
       end
 
       private
 
-      attr_reader :bucket, :encryption, :files_dir
+      attr_reader :aws_s3_client, :bucket, :encryption, :files_dir
 
       def write_single(dest, src)
         src = File.expand_path(src)
 
         File.open(src, 'rb') do |file|
-          bucket.object(dest).put(
-            body: file,
+          aws_s3_client.put_object(
+            body: file.read,
+            bucket: bucket,
+            key: dest,
             server_side_encryption: encryption
           )
         end
@@ -72,7 +76,7 @@ module Simmer
       end
 
       def assert_bucket_name(name)
-        return if name.end_with?(BUCKET_SUFFIX)
+        return if name.to_s.end_with?(BUCKET_SUFFIX)
 
         raise ArgumentError, "bucket (#{name}) must end in #{BUCKET_SUFFIX}"
       end

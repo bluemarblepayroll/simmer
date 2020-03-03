@@ -30,8 +30,8 @@ describe Simmer::Specification::Act do
     end
 
     it 'sets params' do
-      expect(subject.params.files).to eq(['input/noc_list.csv'])
-      expect(subject.params.keys).to  eq('code' => 'I am the law!')
+      expect(subject.params.files).to eq('input_file' => 'noc_list.csv')
+      expect(subject.params.keys).to  eq('code' => 'The secret code is: {codes.the_secret_one}')
     end
   end
 end

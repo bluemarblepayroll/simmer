@@ -114,8 +114,12 @@ module Simmer
     end
 
     def make_aws_file_system(configuration)
+      config = (configuration.aws_file_system_config || {}).symbolize_keys
+
       Externals::AwsFileSystem.new(
-        configuration.aws_file_system_config,
+        make_aws_s3_client(config),
+        config[:bucket],
+        config[:encryption],
         configuration.files_dir
       )
     end
@@ -124,6 +128,14 @@ module Simmer
       Externals::SpoonClient.new(
         configuration.spoon_client_config,
         configuration.files_dir
+      )
+    end
+
+    def make_aws_s3_client(config)
+      Aws::S3::Client.new(
+        access_key_id: config[:access_key_id],
+        secret_access_key: config[:secret_access_key],
+        region: config[:region]
       )
     end
   end
