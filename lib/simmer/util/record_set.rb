@@ -14,6 +14,10 @@ module Simmer
     # A less-strict comparable collection of Record instances.
     # It does not depend on Record ordering.
     class RecordSet
+      extend Forwardable
+
+      def_delegators :records, :length
+
       attr_reader :records
 
       def initialize(records = [])

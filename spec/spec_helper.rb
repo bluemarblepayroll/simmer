@@ -21,3 +21,15 @@ unless ENV['DISABLE_SIMPLECOV'] == 'true'
 end
 
 require './lib/simmer'
+
+def fixture_path(*filename)
+  File.join('spec', 'fixtures', filename)
+end
+
+def fixture(*filename)
+  File.open(fixture_path(*filename)).read
+end
+
+def yaml_fixture(*filename)
+  YAML.safe_load(fixture(*filename))
+end

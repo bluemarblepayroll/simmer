@@ -1,0 +1,30 @@
+name: Declassify Users
+stage:
+  files:
+    src: noc_list.csv
+    dest: input/noc_list.csv
+  fixtures:
+    - iron_man
+    - hulk
+act:
+  name: load_noc_list
+  repository: top_secret
+  type: transformation
+  params:
+    files:
+      - input/noc_list.csv
+    keys:
+      code: 'I am the law!'
+assert:
+  assertions:
+    - type: table
+      name: agents
+      records:
+        - call_sign: iron_man
+          first: tony
+          last: stark
+        - call_sign: hulk
+          first: bruce
+          last: banner
+    - type: output
+      value: Decoding Agents

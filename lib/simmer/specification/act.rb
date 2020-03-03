@@ -16,11 +16,6 @@ module Simmer
       extend Forwardable
       acts_as_hashable
 
-      module Type
-        JOB            = :job
-        TRANSFORMATION = :transformation
-      end
-
       attr_reader :repository, :name, :type, :params
 
       def_delegator :params, :compile, :compiled_params
@@ -32,7 +27,7 @@ module Simmer
 
         @repository = repository.to_s
         @name       = name.to_s
-        @type       = Type.const_get(type.to_s.to_s.upcase.to_sym)
+        @type       = type.to_s
         @params     = Params.make(params)
 
         freeze
