@@ -30,18 +30,11 @@ module Simmer
 
     attr_reader :config
 
-    def initialize(
-      config_path:,
-      resolver: Objectable.resolver,
-      results_dir:,
-      simmer_dir:,
-      yaml_reader: Util::YamlReader.new
-    )
-      @config      = yaml_reader.smash(config_path)
+    def initialize(config, results_dir, simmer_dir, resolver: Objectable.resolver)
+      @config      = config || {}
       @resolver    = resolver
       @results_dir = results_dir
       @simmer_dir  = simmer_dir
-      @yaml_reader = yaml_reader
 
       freeze
     end
@@ -68,12 +61,6 @@ module Simmer
 
     def files_dir
       File.join(simmer_dir, FILES)
-    end
-
-    def fixture_set
-      config = yaml_reader.smash(fixtures_dir)
-
-      Database::FixtureSet.new(config)
     end
 
     private

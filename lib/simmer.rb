@@ -51,21 +51,28 @@ module Simmer
       results_dir: DEFAULT_RESULTS_DIR,
       simmer_dir: DEFAULT_SIMMER_DIR
     )
-      configuration = Configuration.new(
-        config_path: config_path,
-        results_dir: results_dir,
-        simmer_dir: simmer_dir
-      )
+      # Get configuration
+      yaml_reader   = Util::YamlReader.new
+      raw_config    = yaml_reader.smash(config_path)
+      configuration = Configuration.new(raw_config, results_dir, simmer_dir)
 
-      specs  = make_specifications(path, configuration.tests_dir)
-      runner = make_runner(configuration, out)
+      # Get fixtures
+      raw_fixtures = yaml_reader.smash(configuration.fixtures_dir)
+      fixtures     = Database::FixtureSet.new(raw_fixtures)
 
-      Suite.new(
+      # Get specifications to run
+      specs = make_specifications(path, configuration.tests_dir)
+
+      # Make main executable instances
+      runner = make_runner(configuration, out, fixtures)
+      suite  = Suite.new(
         config: configuration.config,
         out: out,
         results_dir: results_dir,
         runner: runner
-      ).run(specs)
+      )
+
+      suite.run(specs)
     end
 
     def make_specifications(path, tests_dir)
@@ -78,8 +85,8 @@ module Simmer
       end
     end
 
-    def make_runner(configuration, out)
-      database     = make_mysql_database(configuration)
+    def make_runner(configuration, out, fixtures)
+      database     = make_mysql_database(configuration, fixtures)
       file_system  = make_aws_file_system(configuration)
       spoon_client = make_spoon_client(configuration)
 
@@ -91,10 +98,16 @@ module Simmer
       )
     end
 
-    def make_mysql_database(configuration)
+    def make_fixture_set(configuration)
+      config = Util::YamlReader.new.smash(configuration.fixtures_dir)
+
+      Database::FixtureSet.new(config)
+    end
+
+    def make_mysql_database(configuration, fixtures)
       Externals::MysqlDatabase.new(
         configuration.database_config,
-        configuration.fixture_set
+        fixtures
       )
     end
 
