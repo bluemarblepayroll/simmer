@@ -27,9 +27,13 @@ def fixture_path(*filename)
 end
 
 def fixture(*filename)
-  File.open(fixture_path(*filename)).read
+  File.read(fixture_path(*filename))
 end
 
 def yaml_fixture(*filename)
   YAML.safe_load(fixture(*filename))
+end
+
+def yaml_read(*filename)
+  YAML.safe_load(File.read(File.join(*filename)))
 end

@@ -1,0 +1,7 @@
+mysql_database:
+  init_command: "SET @@SESSION.sql_mode = 'TRADITIONAL,NO_AUTO_VALUE_ON_ZERO'"
+  database: simmer_test
+  username: root
+  host: 127.0.0.1
+  port: 3306
+  flags: MULTI_STATEMENTS

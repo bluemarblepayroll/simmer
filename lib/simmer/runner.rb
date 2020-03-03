@@ -72,7 +72,7 @@ module Simmer
 
     def seed_file_system(specification)
       print_waiting('Stage', 'Seeding File System')
-      count = file_system.write(specification)
+      count = file_system.write!(specification)
       print("#{count} file(s) uploaded")
 
       count

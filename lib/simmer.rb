@@ -107,17 +107,24 @@ module Simmer
     end
 
     def make_mysql_database(configuration, fixtures)
-      Externals::MysqlDatabase.new(
-        configuration.mysql_database_config,
-        fixtures
-      )
+      config         = (configuration.mysql_database_config || {}).symbolize_keys
+      client         = Mysql2::Client.new(config)
+      exclude_tables = config[:exclude_tables]
+
+      Externals::MysqlDatabase.new(client, exclude_tables, fixtures)
     end
 
     def make_aws_file_system(configuration)
       config = (configuration.aws_file_system_config || {}).symbolize_keys
 
+      client = Aws::S3::Client.new(
+        access_key_id: config[:access_key_id],
+        secret_access_key: config[:secret_access_key],
+        region: config[:region]
+      )
+
       Externals::AwsFileSystem.new(
-        make_aws_s3_client(config),
+        client,
         config[:bucket],
         config[:encryption],
         configuration.files_dir
@@ -128,14 +135,6 @@ module Simmer
       Externals::SpoonClient.new(
         configuration.spoon_client_config,
         configuration.files_dir
-      )
-    end
-
-    def make_aws_s3_client(config)
-      Aws::S3::Client.new(
-        access_key_id: config[:access_key_id],
-        secret_access_key: config[:secret_access_key],
-        region: config[:region]
       )
     end
   end

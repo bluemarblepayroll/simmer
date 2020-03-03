@@ -29,7 +29,7 @@ module Simmer
         freeze
       end
 
-      def write(specification)
+      def write!(specification)
         files = specification.stage.files
 
         files.each do |file|
@@ -41,11 +41,13 @@ module Simmer
         files.length
       end
 
-      def clean
+      def clean!
         response    = aws_s3_client.list_objects(bucket: bucket)
         objects     = response.contents
         keys        = objects.map(&:key)
         delete_keys = keys.map { |key| { key: key } }
+
+        return 0 if objects.length.zero?
 
         aws_s3_client.delete_objects(
           bucket: bucket,

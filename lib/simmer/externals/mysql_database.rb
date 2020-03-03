@@ -15,16 +15,13 @@ module Simmer
     class MysqlDatabase
       DATABASE_SUFFIX = 'test'
 
-      def initialize(config, fixture_set)
-        config = (config || {}).symbolize_keys
-
-        database = config[:database].to_s
-        assert_database_name(database)
-
-        @client        = Mysql2::Client.new(config)
+      def initialize(client, exclude_tables, fixture_set)
+        @client        = client
         @fixture_set   = fixture_set
-        exclude_tables = Array(config[:exclude_tables]).map(&:to_s)
+        exclude_tables = Array(exclude_tables).map(&:to_s)
         @table_names   = retrieve_table_names - exclude_tables
+
+        assert_database_name(schema)
 
         freeze
       end

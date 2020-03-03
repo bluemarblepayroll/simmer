@@ -35,19 +35,40 @@ describe Simmer::Externals::AwsFileSystem do
 
         OpenStruct.new(contents: contents)
       })
+
+      client.stub_responses(:delete_objects, lambda { |context|
+        keys = context.params.dig(:delete, :objects).map { |k| k[:key] }
+
+        keys.each { |key| bucket_store.delete(key) }
+      })
     end
   end
 
   subject { described_class.new(aws_s3_client_stub, bucket_name, encryption, files_dir) }
 
   specify '#write transfers all files' do
-    subject.write(specification)
+    subject.write!(specification)
 
     expected = {
       'input/noc_list.csv' => {
         body: "call_sign,first,last\niron_man,Tony,Stark\nhulk,Bruce,Banner\n"
       }
     }
+
+    expect(bucket_store).to eq(expected)
+  end
+
+  specify '#clean! deletes all files' do
+    aws_s3_client_stub.put_object(
+      body: 'Test File',
+      bucket: bucket_name,
+      key: 'test_key.txt',
+      server_side_encryption: encryption
+    )
+
+    subject.clean!
+
+    expected = {}
 
     expect(bucket_store).to eq(expected)
   end
