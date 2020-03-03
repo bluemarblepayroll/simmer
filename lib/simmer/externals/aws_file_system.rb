@@ -18,6 +18,7 @@ module Simmer
       def initialize(aws_s3_client, bucket, encryption, files_dir)
         raise ArgumentError, 'aws_s3_client is required' unless aws_s3_client
         raise ArgumentError, 'bucket is required'        if bucket.to_s.empty?
+
         assert_bucket_name(bucket)
 
         @aws_s3_client = aws_s3_client

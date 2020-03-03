@@ -20,17 +20,17 @@ describe Simmer::Externals::AwsFileSystem do
 
   let(:aws_s3_client_stub) do
     Aws::S3::Client.new(stub_responses: true).tap do |client|
-      client.stub_responses(:get_object, -> (context) {
+      client.stub_responses(:get_object, lambda { |context|
         obj = bucket_store[context.params[:key]]
-        obj ?  obj : 'NoSuchKey'
+        obj || 'NoSuchKey'
       })
 
-      client.stub_responses(:put_object, -> (context) {
+      client.stub_responses(:put_object, lambda { |context|
         bucket_store[context.params[:key]] = { body: context.params[:body] }
         {}
       })
 
-      client.stub_responses(:list_objects, -> (context) {
+      client.stub_responses(:list_objects, lambda { |_context|
         contents = bucket_store.keys.map { |k| OpenStruct.new(key: k) }
 
         OpenStruct.new(contents: contents)
@@ -38,7 +38,7 @@ describe Simmer::Externals::AwsFileSystem do
     end
   end
 
-  subject { described_class.new(aws_s3_client_stub, bucket_name, encryption, files_dir)}
+  subject { described_class.new(aws_s3_client_stub, bucket_name, encryption, files_dir) }
 
   specify '#write transfers all files' do
     subject.write(specification)
