@@ -64,7 +64,7 @@ module Simmer
 
     def clean_file_system
       print_waiting('Stage', 'Cleaning File System')
-      count = file_system.clean
+      count = file_system.clean!
       print("#{count} file(s) deleted")
 
       count

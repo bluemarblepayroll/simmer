@@ -19,6 +19,7 @@ module Simmer
     # Paths
     FILES    = 'files'
     FIXTURES = 'fixtures'
+    RESULTS  = 'results'
     TESTS    = 'specs'
 
     private_constant :AWS_FILE_SYSTEM_KEY,
@@ -30,10 +31,9 @@ module Simmer
 
     attr_reader :config
 
-    def initialize(config, results_dir, simmer_dir, resolver: Objectable.resolver)
+    def initialize(config, simmer_dir, resolver: Objectable.resolver)
       @config      = config || {}
       @resolver    = resolver
-      @results_dir = results_dir
       @simmer_dir  = simmer_dir
 
       freeze
@@ -63,10 +63,13 @@ module Simmer
       File.join(simmer_dir, FILES)
     end
 
+    def results_dir
+      File.join(simmer_dir, RESULTS)
+    end
+
     private
 
     attr_reader :resolver,
-                :results_dir,
                 :simmer_dir,
                 :yaml_reader
 

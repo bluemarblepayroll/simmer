@@ -47,11 +47,13 @@ describe Simmer::Externals::SpoonClient do
     end
 
     specify '#run is called with the right arguments' do
+      expected_path = File.expand_path(File.join(files_dir, 'noc_list.csv'))
+
       args = {
         repository: 'top_secret',
         name: 'load_noc_list',
         params: {
-          'input_file' => '/Users/mattruggio/open_source/simmer/spec/fixtures/noc_list.csv',
+          'input_file' => expected_path,
           'code' => 'The secret code is: '
         },
         type: 'transformation'

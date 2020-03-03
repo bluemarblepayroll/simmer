@@ -41,7 +41,6 @@ require_relative 'simmer/suite'
 # The main entry-point API for the library.
 module Simmer
   DEFAULT_CONFIG_PATH = File.join('config', 'simmer.yaml')
-  DEFAULT_RESULTS_DIR = 'results'
   DEFAULT_SIMMER_DIR  = 'simmer'
 
   class << self
@@ -49,13 +48,12 @@ module Simmer
       path,
       config_path: DEFAULT_CONFIG_PATH,
       out: $stdout,
-      results_dir: DEFAULT_RESULTS_DIR,
       simmer_dir: DEFAULT_SIMMER_DIR
     )
       # Get configuration
       yaml_reader   = Util::YamlReader.new
       raw_config    = yaml_reader.smash(config_path)
-      configuration = Configuration.new(raw_config, results_dir, simmer_dir)
+      configuration = Configuration.new(raw_config, simmer_dir)
 
       # Get fixtures
       raw_fixtures = yaml_reader.smash(configuration.fixtures_dir)
@@ -69,7 +67,7 @@ module Simmer
       suite  = Suite.new(
         config: configuration.config,
         out: out,
-        results_dir: results_dir,
+        results_dir: configuration.results_dir,
         runner: runner
       )
 
@@ -144,7 +142,7 @@ module Simmer
           Pdi::Spoon.new(dir: config[:dir])
         end
 
-      Externals::SpoonClient.new(spoon, configuration.files_dir)
+      Externals::SpoonClient.new(configuration.files_dir, spoon)
     end
   end
 end

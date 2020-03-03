@@ -12,10 +12,9 @@ require 'spec_helper'
 describe Simmer::Configuration do
   let(:path)        { File.join('configuration.yaml') }
   let(:config)      { yaml_fixture(path) }
-  let(:results_dir) { 'results_dir' }
   let(:simmer_dir)  { 'simmer' }
 
-  subject { described_class.new(config, results_dir, simmer_dir) }
+  subject { described_class.new(config, simmer_dir) }
 
   specify '#mysql_database_config resolves' do
     expect(subject.mysql_database_config).to eq('mysql_database_key' => 'mysql_database_value')
@@ -39,5 +38,9 @@ describe Simmer::Configuration do
 
   specify '#files_dir resolves' do
     expect(subject.files_dir).to eq(File.join(simmer_dir, 'files'))
+  end
+
+  specify '#results_dir resolves' do
+    expect(subject.results_dir).to eq(File.join(simmer_dir, 'results'))
   end
 end
