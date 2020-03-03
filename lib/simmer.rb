@@ -106,14 +106,14 @@ module Simmer
 
     def make_mysql_database(configuration, fixtures)
       Externals::MysqlDatabase.new(
-        configuration.database_config,
+        configuration.mysql_database_config,
         fixtures
       )
     end
 
     def make_aws_file_system(configuration)
       Externals::AwsFileSystem.new(
-        configuration.file_system_config,
+        configuration.aws_file_system_config,
         configuration.files_dir
       )
     end

@@ -39,11 +39,11 @@ module Simmer
       freeze
     end
 
-    def database_config
+    def mysql_database_config
       get(MYSQL_DATABASE_KEY) || {}
     end
 
-    def file_system_config
+    def aws_file_system_config
       get(AWS_FILE_SYSTEM_KEY) || {}
     end
 
