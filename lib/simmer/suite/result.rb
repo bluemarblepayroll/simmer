@@ -8,7 +8,7 @@
 #
 
 module Simmer
-  class Session
+  class Suite
     # The return object for a Session#run call.
     class Result
       attr_reader :runner_results

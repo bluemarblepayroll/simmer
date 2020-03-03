@@ -8,7 +8,7 @@
 #
 
 module Simmer
-  class Session
+  class Suite
     # Understands how to write a SessionResult instance to disk.
     class Reporter
       DATA_FILE    = 'data.yaml'

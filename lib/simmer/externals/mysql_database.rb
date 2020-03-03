@@ -97,9 +97,19 @@ module Simmer
         'SET @@foreign_key_checks = 1'
       end
 
+      def schema
+        client.query_options[:database].to_s
+      end
+
       def retrieve_table_names
-        schema = client.escape(client.query_options[:database].to_s)
-        sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '#{schema}'"
+        escaped_schema = client.escape(schema)
+
+        sql = <<~SQL
+          SELECT TABLE_NAME
+          FROM INFORMATION_SCHEMA.TABLES
+          WHERE TABLE_SCHEMA = '#{escaped_schema}'
+            AND TABLE_TYPE = 'BASE TABLE'
+        SQL
 
         client.query(sql).to_a.map { |v| v['TABLE_NAME'].to_s }
       end
