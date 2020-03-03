@@ -34,8 +34,8 @@ require_relative 'simmer/configuration'
 require_relative 'simmer/database'
 require_relative 'simmer/externals'
 require_relative 'simmer/runner'
-require_relative 'simmer/suite'
 require_relative 'simmer/specification'
+require_relative 'simmer/suite'
 
 # The main entry-point API for the library.
 module Simmer
@@ -74,6 +74,8 @@ module Simmer
 
       suite.run(specs)
     end
+
+    private
 
     def make_specifications(path, tests_dir)
       path = path.to_s.empty? ? tests_dir : path
