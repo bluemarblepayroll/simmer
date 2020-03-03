@@ -7,36 +7,22 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'spoon_client/mock'
 require_relative 'spoon_client/result'
 
 module Simmer
   module Externals
     # Wraps up Pdi::Spoon at a higher-level for Simmer to consume.
     class SpoonClient
-      MOCK_KEY     = :mock
-      MOCK_ERR_KEY = :mock_err
+      def initialize(files_dir, spoon)
+        raise ArgumentError, 'spoon is required' unless spoon
 
-      private_constant :MOCK_KEY, :MOCK_ERR_KEY
-
-      def initialize(config, files_dir)
-        @files_dir = files_dir
-
-        config = (config || {}).symbolize_keys
-
-        @spoon =
-          if config[MOCK_KEY]
-            Mock.new
-          elsif config[MOCK_ERR_KEY]
-            Mock.new(false)
-          else
-            Pdi::Spoon.new(dir: config[:dir])
-          end
+        @files_dir = files_dir.to_s
+        @spoon     = spoon
 
         freeze
       end
 
-      def run(specification, config = {})
+      def run(specification, config)
         execution_result = nil
         time_in_seconds  = nil
 

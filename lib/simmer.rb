@@ -35,6 +35,7 @@ require_relative 'simmer/database'
 require_relative 'simmer/externals'
 require_relative 'simmer/runner'
 require_relative 'simmer/specification'
+require_relative 'simmer/spoon_mock'
 require_relative 'simmer/suite'
 
 # The main entry-point API for the library.
@@ -132,10 +133,18 @@ module Simmer
     end
 
     def make_spoon_client(configuration)
-      Externals::SpoonClient.new(
-        configuration.spoon_client_config,
-        configuration.files_dir
-      )
+      config = (configuration.spoon_client_config || {}).symbolize_keys
+
+      spoon =
+        if config[:mock]
+          SpoonMock.new
+        elsif config[:mock_err]
+          SpoonMock.new(false)
+        else
+          Pdi::Spoon.new(dir: config[:dir])
+        end
+
+      Externals::SpoonClient.new(spoon, configuration.files_dir)
     end
   end
 end

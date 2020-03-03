@@ -10,8 +10,7 @@
 require 'spec_helper'
 
 describe Simmer::Specification::Act::Params do
-  let(:spec_path) { File.join('specifications', 'load_noc_list.yaml') }
-
+  let(:spec_path)     { File.join('specifications', 'load_noc_list.yaml') }
   let(:params_config) { yaml_fixture(spec_path).dig('act', 'params') }
 
   let(:config) do

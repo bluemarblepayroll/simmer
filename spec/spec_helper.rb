@@ -37,3 +37,7 @@ end
 def yaml_read(*filename)
   YAML.safe_load(File.read(File.join(*filename)))
 end
+
+def simmer_config
+  yaml_read('spec', 'config', 'simmer.yaml')
+end

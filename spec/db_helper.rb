@@ -13,7 +13,7 @@ CLEAN_SQL_STATEMENTS = [
 ].freeze
 
 def db_helper_config
-  yaml_read('spec', 'config', 'simmer.yaml')['mysql_database']
+  simmer_config['mysql_database']
 end
 
 def db_helper_client
