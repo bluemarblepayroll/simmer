@@ -50,31 +50,29 @@ module Simmer
       out: $stdout,
       simmer_dir: DEFAULT_SIMMER_DIR
     )
-      # Get configuration
-      yaml_reader   = Util::YamlReader.new
-      raw_config    = yaml_reader.smash(config_path)
-      configuration = Configuration.new(raw_config, simmer_dir)
-
-      # Get fixtures
-      raw_fixtures = yaml_reader.smash(configuration.fixtures_dir)
-      fixtures     = Database::FixtureSet.new(raw_fixtures)
-
-      # Get specifications to run
-      specs = make_specifications(path, configuration.tests_dir)
-
-      # Make main executable instances
-      runner = make_runner(configuration, out, fixtures)
-      suite  = Suite.new(
-        config: configuration.config,
-        out: out,
-        results_dir: configuration.results_dir,
-        runner: runner
-      )
+      configuration = make_configuration(config_path: config_path, simmer_dir: simmer_dir)
+      fixtures      = make_fixtures(configuration)
+      specs         = make_specifications(path, configuration.tests_dir)
+      runner        = make_runner(configuration, out, fixtures)
+      suite         = make_suite(configuration, out, runner)
 
       suite.run(specs)
     end
 
+    def make_configuration(
+      config_path: DEFAULT_CONFIG_PATH,
+      simmer_dir: DEFAULT_SIMMER_DIR
+    )
+      raw_config = yaml_reader.smash(config_path)
+
+      Configuration.new(raw_config, simmer_dir)
+    end
+
     private
+
+    def yaml_reader
+      Util::YamlReader.new
+    end
 
     def make_specifications(path, tests_dir)
       path = path.to_s.empty? ? tests_dir : path
@@ -143,6 +141,21 @@ module Simmer
         end
 
       Externals::SpoonClient.new(configuration.files_dir, spoon)
+    end
+
+    def make_fixtures(configuration)
+      raw_fixtures = yaml_reader.smash(configuration.fixtures_dir)
+
+      Database::FixtureSet.new(raw_fixtures)
+    end
+
+    def make_suite(configuration, out, runner)
+      Suite.new(
+        config: configuration.config,
+        out: out,
+        results_dir: configuration.results_dir,
+        runner: runner
+      )
     end
   end
 end
