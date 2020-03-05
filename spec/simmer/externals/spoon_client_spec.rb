@@ -19,8 +19,6 @@ describe Simmer::Externals::SpoonClient do
   let(:spoon) do
     Pdi::Spoon.new(
       dir: File.join('spec', 'mocks', 'spoon'),
-      pan: 'return_code.sh',
-      kitchen: 'return_code.sh',
       args: arg
     )
   end

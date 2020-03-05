@@ -39,14 +39,6 @@ module Simmer
         self
       end
 
-      def to_h
-        {
-          'pass' => pass?,
-          'time_in_seconds' => time_in_seconds,
-          'runner_results' => runner_results.map(&:to_h)
-        }
-      end
-
       private
 
       attr_reader :session_result

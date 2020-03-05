@@ -8,7 +8,6 @@ mysql_database:
 
 spoon_client:
   dir: spec/mocks/spoon
-  pan: return_code.sh
   args: 0
 
 local_file_system:

@@ -148,12 +148,6 @@ module Simmer
       Externals::SpoonClient.new(configuration.files_dir, spoon)
     end
 
-    def make_fixtures(configuration)
-      raw_fixtures = yaml_reader.smash(configuration.fixtures_dir)
-
-      Database::FixtureSet.new(raw_fixtures)
-    end
-
     def make_suite(configuration, out, runner)
       Suite.new(
         config: configuration.config,
