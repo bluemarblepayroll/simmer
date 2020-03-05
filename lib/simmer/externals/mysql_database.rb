@@ -15,9 +15,8 @@ module Simmer
     class MysqlDatabase
       DATABASE_SUFFIX = 'test'
 
-      def initialize(client, exclude_tables, fixture_set)
+      def initialize(client, exclude_tables)
         @client        = client
-        @fixture_set   = fixture_set
         exclude_tables = Array(exclude_tables).map(&:to_s)
         @table_names   = retrieve_table_names - exclude_tables
 
@@ -32,8 +31,8 @@ module Simmer
         client.query(query).to_a
       end
 
-      def seed!(specification)
-        sql_statements = seed_sql_statements(specification)
+      def seed!(fixtures)
+        sql_statements = seed_sql_statements(fixtures)
 
         shameless_execute(sql_statements)
 
@@ -56,14 +55,8 @@ module Simmer
         Array(columns).any? ? Array(columns).map { |c| client.escape(c) }.join(',') : '*'
       end
 
-      def seed_sql_statements(specification)
-        fixture_names = specification.stage.fixtures
-
-        fixture_names.map do |fixture_name|
-          fixture = fixture_set.get!(fixture_name)
-
-          SqlFixture.new(client, fixture).to_sql
-        end
+      def seed_sql_statements(fixtures)
+        fixtures.map { |fixture| SqlFixture.new(client, fixture).to_sql }
       end
 
       def clean_sql_statements

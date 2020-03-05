@@ -11,21 +11,6 @@ require 'spec_helper'
 require 'db_helper'
 
 describe Simmer::Externals::SpoonClient do
-  class Mock
-    attr_reader :result
-
-    def initialize(result)
-      @result = result
-    end
-
-    def run(*)
-      raise Pdi::Spoon::KitchenError, OpenStruct.new(code: 1) if result == 'KitchenError'
-      raise Pdi::Spoon::PanError, OpenStruct.new(code: 1)     if result == 'PanError'
-
-      Pdi::Executor::Result.new(result)
-    end
-  end
-
   let(:files_dir)            { File.join('spec', 'fixtures') }
   let(:specification_path)   { File.join('specifications', 'load_noc_list.yaml') }
   let(:specification_config) { yaml_fixture(specification_path).merge(path: specification_path) }
@@ -35,33 +20,18 @@ describe Simmer::Externals::SpoonClient do
 
   context 'when PDI executes successfully' do
     let(:spoon) do
-      Mock.new(
-        args: [],
-        status: {
-          code: 0,
-          err: 'Some error output from PDI',
-          out: 'Some output from PDI',
-          pid: 123
-        }
+      Pdi::Spoon.new(
+        dir: File.join('spec', 'mocks', 'spoon'),
+        pan: 'return_code.sh',
+        kitchen: 'return_code.sh',
+        args: 0
       )
     end
 
-    specify '#run is called with the right arguments' do
-      expected_path = File.expand_path(File.join(files_dir, 'noc_list.csv'))
+    specify '#run returns code 0 from executor' do
+      result = subject.run(specification, simmer_config)
 
-      args = {
-        repository: 'top_secret',
-        name: 'load_noc_list',
-        params: {
-          'input_file' => expected_path,
-          'code' => 'The secret code is: '
-        },
-        type: 'transformation'
-      }
-
-      expect(spoon).to receive(:run).with(args)
-
-      subject.run(specification, simmer_config)
+      expect(result.execution_result.code).to eq(0)
     end
   end
 end

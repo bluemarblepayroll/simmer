@@ -35,7 +35,6 @@ require_relative 'simmer/database'
 require_relative 'simmer/externals'
 require_relative 'simmer/runner'
 require_relative 'simmer/specification'
-require_relative 'simmer/spoon_mock'
 require_relative 'simmer/suite'
 
 # The main entry-point API for the library.
@@ -51,9 +50,8 @@ module Simmer
       simmer_dir: DEFAULT_SIMMER_DIR
     )
       configuration = make_configuration(config_path: config_path, simmer_dir: simmer_dir)
-      fixtures      = make_fixtures(configuration)
       specs         = make_specifications(path, configuration.tests_dir)
-      runner        = make_runner(configuration, out, fixtures)
+      runner        = make_runner(configuration, out)
       suite         = make_suite(configuration, out, runner)
 
       suite.run(specs)
@@ -84,14 +82,16 @@ module Simmer
       end
     end
 
-    def make_runner(configuration, out, fixtures)
-      database     = make_mysql_database(configuration, fixtures)
+    def make_runner(configuration, out)
+      database     = make_mysql_database(configuration)
       file_system  = make_aws_file_system(configuration)
+      fixture_set  = make_fixture_set(configuration)
       spoon_client = make_spoon_client(configuration)
 
       Runner.new(
         database: database,
         file_system: file_system,
+        fixture_set: fixture_set,
         out: out,
         spoon_client: spoon_client
       )
@@ -103,22 +103,18 @@ module Simmer
       Database::FixtureSet.new(config)
     end
 
-    def make_mysql_database(configuration, fixtures)
+    def make_mysql_database(configuration)
       config         = (configuration.mysql_database_config || {}).symbolize_keys
       client         = Mysql2::Client.new(config)
       exclude_tables = config[:exclude_tables]
 
-      Externals::MysqlDatabase.new(client, exclude_tables, fixtures)
+      Externals::MysqlDatabase.new(client, exclude_tables)
     end
 
     def make_aws_file_system(configuration)
-      config = (configuration.aws_file_system_config || {}).symbolize_keys
-
-      client = Aws::S3::Client.new(
-        access_key_id: config[:access_key_id],
-        secret_access_key: config[:secret_access_key],
-        region: config[:region]
-      )
+      config      = (configuration.aws_file_system_config || {}).symbolize_keys
+      client_args = config.slice(:access_key_id, :secret_access_key, :region)
+      client      = Aws::S3::Client.new(client_args)
 
       Externals::AwsFileSystem.new(
         client,
@@ -129,16 +125,9 @@ module Simmer
     end
 
     def make_spoon_client(configuration)
-      config = (configuration.spoon_client_config || {}).symbolize_keys
-
-      spoon =
-        if config[:mock]
-          SpoonMock.new
-        elsif config[:mock_err]
-          SpoonMock.new(false)
-        else
-          Pdi::Spoon.new(dir: config[:dir])
-        end
+      config     = (configuration.spoon_client_config || {}).symbolize_keys
+      spoon_args = config.slice(:args, :dir, :kitchen, :pan)
+      spoon      = Pdi::Spoon.new(spoon_args)
 
       Externals::SpoonClient.new(configuration.files_dir, spoon)
     end

@@ -13,9 +13,10 @@ require_relative 'runner/result'
 module Simmer
   # Runs a single specification.
   class Runner
-    def initialize(database:, file_system:, out:, spoon_client:)
+    def initialize(database:, file_system:, fixture_set:, out:, spoon_client:)
       @database     = database
       @file_system  = file_system
+      @fixture_set  = fixture_set
       @judge        = Judge.new(database)
       @out          = out
       @spoon_client = spoon_client
@@ -44,7 +45,7 @@ module Simmer
 
     private
 
-    attr_reader :database, :file_system, :judge, :out, :spoon_client
+    attr_reader :database, :file_system, :fixture_set, :judge, :out, :spoon_client
 
     def clean_db
       print_waiting('Stage', 'Cleaning database')
@@ -56,7 +57,10 @@ module Simmer
 
     def seed_db(specification)
       print_waiting('Stage', 'Seeding database')
-      count = database.seed!(specification)
+
+      fixtures = specification.stage.fixtures.map { |f| fixture_set.get!(f) }
+      count    = database.seed!(fixtures)
+
       print("#{count} record(s) inserted")
 
       count
@@ -72,7 +76,7 @@ module Simmer
 
     def seed_file_system(specification)
       print_waiting('Stage', 'Seeding File System')
-      count = file_system.write!(specification)
+      count = file_system.write!(specification.stage.files)
       print("#{count} file(s) uploaded")
 
       count

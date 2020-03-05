@@ -29,16 +29,14 @@ module Simmer
         freeze
       end
 
-      def write!(specification)
-        files = specification.stage.files
+      def write!(input_files)
+        input_files.each do |input_file|
+          src = File.join(files_dir, input_file.src)
 
-        files.each do |file|
-          src = File.join(files_dir, file.src)
-
-          write_single(file.dest, src)
+          write_single(input_file.dest, src)
         end
 
-        files.length
+        input_files.length
       end
 
       def clean!

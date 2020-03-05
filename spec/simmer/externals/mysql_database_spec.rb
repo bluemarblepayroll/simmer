@@ -18,14 +18,16 @@ describe Simmer::Externals::MysqlDatabase do
   let(:spec_config)    { yaml_fixture(spec_path).merge(path: spec_path) }
   let(:specification)  { Simmer::Specification.make(spec_config) }
 
-  subject { described_class.new(db_helper_client, exclude_tables, fixture_set) }
+  subject { described_class.new(db_helper_client, exclude_tables) }
 
   before(:each) do
     db_helper_clean_schema
   end
 
   specify '#seed! adds records' do
-    subject.seed!(specification)
+    fixtures = specification.stage.fixtures.map { |f| fixture_set.get!(f) }
+
+    subject.seed!(fixtures)
 
     actual = db_helper_client.query('SELECT * FROM agents ORDER BY call_sign').to_a
 
