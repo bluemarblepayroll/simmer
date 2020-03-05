@@ -15,12 +15,13 @@ module Simmer
     class MysqlDatabase
       DATABASE_SUFFIX = 'test'
 
-      def initialize(client, exclude_tables)
-        @client        = client
-        exclude_tables = Array(exclude_tables).map(&:to_s)
-        @table_names   = retrieve_table_names - exclude_tables
+      def initialize(client, exclude_tables = [])
+        @client = client
 
         assert_database_name(schema)
+
+        exclude_tables = Array(exclude_tables).map(&:to_s)
+        @table_names   = retrieve_table_names - exclude_tables
 
         freeze
       end

@@ -27,10 +27,6 @@ module Simmer
         fixtures_by_name[key]
       end
 
-      def all
-        fixtures_by_name.values
-      end
-
       private
 
       attr_reader :fixtures_by_name

@@ -17,10 +17,24 @@ describe Simmer::Util::RecordSet do
     }
   end
 
+  let(:string_hash1) do
+    {
+      'a' => 'a',
+      'b' => 'b'
+    }
+  end
+
   let(:hash2) do
     {
       c: 'c',
       d: 'd'
+    }
+  end
+
+  let(:string_hash2) do
+    {
+      'c' => 'c',
+      'd' => 'd'
     }
   end
 
@@ -37,5 +51,17 @@ describe Simmer::Util::RecordSet do
 
   specify '#keys includes all record keys' do
     expect(subject.keys).to eq(%w[a b c d])
+  end
+
+  specify '#to_h includes record hashes' do
+    expect(subject.to_h).to eq('records' => [string_hash1, string_hash2])
+  end
+
+  describe 'initialization' do
+    specify 'can accept a hash' do
+      subject = described_class.new(hash1)
+
+      expect(subject.records.length).to eq(1)
+    end
   end
 end

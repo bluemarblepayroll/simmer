@@ -24,6 +24,14 @@ describe Simmer::Externals::MysqlDatabase do
     db_helper_clean_schema
   end
 
+  describe 'initialization' do
+    it "requires database ends in 'test'" do
+      expect do
+        described_class.new(OpenStruct.new(query_options: { database: 'hehe' }))
+      end.to raise_error(ArgumentError)
+    end
+  end
+
   specify '#seed! adds records' do
     fixtures = specification.stage.fixtures.map { |f| fixture_set.get!(f) }
 

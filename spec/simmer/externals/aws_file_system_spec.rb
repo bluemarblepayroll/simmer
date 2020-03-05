@@ -21,6 +21,14 @@ describe Simmer::Externals::AwsFileSystem do
 
   subject { described_class.new(aws_s3_client_stub, bucket_name, encryption, files_dir) }
 
+  describe 'initialization' do
+    it "requires bucket ends in 'test'" do
+      expect do
+        described_class.new(aws_s3_client_stub, 'hehe', encryption, files_dir)
+      end.to raise_error(ArgumentError)
+    end
+  end
+
   specify '#write transfers all files' do
     subject.write!(specification.stage.files)
 

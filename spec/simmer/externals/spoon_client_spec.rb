@@ -16,22 +16,34 @@ describe Simmer::Externals::SpoonClient do
   let(:specification_config) { yaml_fixture(specification_path).merge(path: specification_path) }
   let(:specification)        { Simmer::Specification.make(specification_config) }
 
+  let(:spoon) do
+    Pdi::Spoon.new(
+      dir: File.join('spec', 'mocks', 'spoon'),
+      pan: 'return_code.sh',
+      kitchen: 'return_code.sh',
+      args: arg
+    )
+  end
+
   subject { described_class.new(files_dir, spoon) }
 
   context 'when PDI executes successfully' do
-    let(:spoon) do
-      Pdi::Spoon.new(
-        dir: File.join('spec', 'mocks', 'spoon'),
-        pan: 'return_code.sh',
-        kitchen: 'return_code.sh',
-        args: 0
-      )
-    end
+    let(:arg) { 0 }
 
     specify '#run returns code 0 from executor' do
       result = subject.run(specification, simmer_config)
 
       expect(result.execution_result.code).to eq(0)
+    end
+  end
+
+  context 'when PDI executes un-successfully' do
+    let(:arg) { 1 }
+
+    specify '#run returns non-zero code from executor' do
+      result = subject.run(specification, simmer_config)
+
+      expect(result.execution_result.code).to eq(1)
     end
   end
 end
