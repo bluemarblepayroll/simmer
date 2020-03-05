@@ -17,9 +17,23 @@ module Simmer
         class Table
           acts_as_hashable
 
-          attr_reader :name, :record_set
+          module Logic
+            EQUALS   = :equals
+            INCLUDES = :includes
+          end
+          include Logic
 
-          def initialize(name:, records: [])
+          LOGIC_METHODS = {
+            EQUALS => ->(actual_record_set, record_set) { actual_record_set == record_set },
+            INCLUDES => lambda { |actual_record_set, record_set|
+              (actual_record_set & record_set) == record_set
+            }
+          }.freeze
+
+          attr_reader :logic, :name, :record_set
+
+          def initialize(logic: EQUALS, name:, records: [])
+            @logic      = Logic.const_get(logic.to_s.upcase.to_sym)
             @name       = name.to_s
             @record_set = Util::RecordSet.new(records)
 
@@ -31,7 +45,7 @@ module Simmer
             actual_records      = database.records(name, keys)
             actual_record_set   = Util::RecordSet.new(actual_records)
 
-            return nil if actual_record_set == record_set
+            return nil if LOGIC_METHODS[logic].call(actual_record_set, record_set)
 
             BadTableAssertion.new(name, record_set, actual_record_set)
           end

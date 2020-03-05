@@ -38,6 +38,13 @@ describe Simmer::Util::RecordSet do
     }
   end
 
+  let(:hash3) do
+    {
+      e: 'e',
+      f: 'f'
+    }
+  end
+
   subject { described_class.new([hash1, hash2]) }
 
   describe 'equality' do
@@ -63,5 +70,15 @@ describe Simmer::Util::RecordSet do
 
       expect(subject.records.length).to eq(1)
     end
+  end
+
+  specify '#& returns intersection of both record sets' do
+    subject1 = described_class.new([hash1, hash2])
+    subject2 = described_class.new([hash1, hash3])
+
+    expected = described_class.new([hash1])
+    actual   = subject1 & subject2
+
+    expect(actual).to eq(expected)
   end
 end

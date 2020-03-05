@@ -41,6 +41,10 @@ module Simmer
         records.flat_map(&:keys)
       end
 
+      def &(other)
+        self.class.new(records & other.records)
+      end
+
       private
 
       def array(val)

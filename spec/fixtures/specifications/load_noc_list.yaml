@@ -26,5 +26,12 @@ assert:
         - call_sign: hulk
           first: bruce
           last: banner
+    - type: table
+      name: agents
+      logic: includes
+      records:
+        - call_sign: iron_man
+          first: tony
+          last: stark
     - type: output
       value: output to stdout

@@ -18,9 +18,11 @@ describe Simmer::Specification::Assert do
     subject { described_class.make(config) }
 
     it 'sets assertions' do
-      expect(subject.assertions.length).to                  eq(2)
+      expect(subject.assertions.length).to                  eq(3)
       expect(subject.assertions.first.name).to              eq('agents')
       expect(subject.assertions.first.record_set.length).to eq(2)
+      expect(subject.assertions[1].name).to                 eq('agents')
+      expect(subject.assertions[1].record_set.length).to    eq(1)
       expect(subject.assertions.last.value).to              eq('output to stdout')
     end
   end
