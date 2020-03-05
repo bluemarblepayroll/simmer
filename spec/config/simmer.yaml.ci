@@ -5,3 +5,19 @@ mysql_database:
   host: 127.0.0.1
   port: 3306
   flags: MULTI_STATEMENTS
+
+spoon_client:
+  dir: spec/mocks/spoon
+  pan: return_code.sh
+  args: 0
+
+local_file_system:
+  dir: tmp/store_test
+
+# aws_file_system:
+#   access_key_id:
+#   bucket:
+#   default_expires_in_seconds: 3600
+#   encryption: AES256
+#   region:
+#   secret_access_key:

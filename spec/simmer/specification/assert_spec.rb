@@ -21,7 +21,7 @@ describe Simmer::Specification::Assert do
       expect(subject.assertions.length).to                  eq(2)
       expect(subject.assertions.first.name).to              eq('agents')
       expect(subject.assertions.first.record_set.length).to eq(2)
-      expect(subject.assertions.last.value).to              eq('Decoding Agents')
+      expect(subject.assertions.last.value).to              eq('output to stdout')
     end
   end
 end

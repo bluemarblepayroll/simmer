@@ -84,7 +84,7 @@ module Simmer
 
     def make_runner(configuration, out)
       database     = make_mysql_database(configuration)
-      file_system  = make_aws_file_system(configuration)
+      file_system  = make_file_system(configuration)
       fixture_set  = make_fixture_set(configuration)
       spoon_client = make_spoon_client(configuration)
 
@@ -104,15 +104,25 @@ module Simmer
     end
 
     def make_mysql_database(configuration)
-      config         = (configuration.mysql_database_config || {}).symbolize_keys
+      config         = configuration.mysql_database_config.symbolize_keys
       client         = Mysql2::Client.new(config)
       exclude_tables = config[:exclude_tables]
 
       Externals::MysqlDatabase.new(client, exclude_tables)
     end
 
+    def make_file_system(configuration)
+      if configuration.aws_file_system?
+        make_aws_file_system(configuration)
+      elsif configuration.local_file_system?
+        make_local_file_system(configuration)
+      else
+        raise ArgumentError, 'cannot determine file system'
+      end
+    end
+
     def make_aws_file_system(configuration)
-      config      = (configuration.aws_file_system_config || {}).symbolize_keys
+      config      = configuration.aws_file_system_config.symbolize_keys
       client_args = config.slice(:access_key_id, :secret_access_key, :region)
       client      = Aws::S3::Client.new(client_args)
 
@@ -122,6 +132,12 @@ module Simmer
         config[:encryption],
         configuration.files_dir
       )
+    end
+
+    def make_local_file_system(configuration)
+      config = configuration.local_file_system_config.symbolize_keys
+
+      Externals::LocalFileSystem.new(config[:dir], configuration.files_dir)
     end
 
     def make_spoon_client(configuration)

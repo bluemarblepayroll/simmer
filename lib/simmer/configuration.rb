@@ -12,9 +12,10 @@ module Simmer
   # Simmer implementation.
   class Configuration
     # Configuration Keys
-    AWS_FILE_SYSTEM_KEY = :aws_file_system
-    MYSQL_DATABASE_KEY  = :mysql_database
-    SPOON_CLIENT_KEY    = :spoon_client
+    AWS_FILE_SYSTEM_KEY   = :aws_file_system
+    LOCAL_FILE_SYSTEM_KEY = :local_file_system
+    MYSQL_DATABASE_KEY    = :mysql_database
+    SPOON_CLIENT_KEY      = :spoon_client
 
     # Paths
     FILES    = 'files'
@@ -45,6 +46,18 @@ module Simmer
 
     def aws_file_system_config
       get(AWS_FILE_SYSTEM_KEY) || {}
+    end
+
+    def local_file_system_config
+      get(LOCAL_FILE_SYSTEM_KEY) || {}
+    end
+
+    def aws_file_system?
+      config.key?(AWS_FILE_SYSTEM_KEY.to_s)
+    end
+
+    def local_file_system?
+      config.key?(LOCAL_FILE_SYSTEM_KEY.to_s)
     end
 
     def spoon_client_config

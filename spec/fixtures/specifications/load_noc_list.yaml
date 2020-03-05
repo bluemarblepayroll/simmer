@@ -27,4 +27,4 @@ assert:
           first: bruce
           last: banner
     - type: output
-      value: Decoding Agents
+      value: output to stdout

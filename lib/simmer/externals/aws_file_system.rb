@@ -7,22 +7,19 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+require_relative 'file_system'
+
 module Simmer
   module Externals
     # Provides the implementation for using AWS S3 as a destination file store.
-    class AwsFileSystem
-      BUCKET_SUFFIX = 'test'
-
-      private_constant :BUCKET_SUFFIX
-
+    class AwsFileSystem < FileSystem
       def initialize(aws_s3_client, bucket, encryption, files_dir)
         raise ArgumentError, 'aws_s3_client is required' unless aws_s3_client
         raise ArgumentError, 'bucket is required'        if bucket.to_s.empty?
 
-        assert_bucket_name(bucket)
+        super(bucket)
 
         @aws_s3_client = aws_s3_client
-        @bucket        = bucket.to_s
         @encryption    = encryption
         @files_dir     = files_dir
 
@@ -40,7 +37,7 @@ module Simmer
       end
 
       def clean!
-        response    = aws_s3_client.list_objects(bucket: bucket)
+        response    = aws_s3_client.list_objects(bucket: root)
         objects     = response.contents
         keys        = objects.map(&:key)
         delete_keys = keys.map { |key| { key: key } }
@@ -48,7 +45,7 @@ module Simmer
         return 0 if objects.length.zero?
 
         aws_s3_client.delete_objects(
-          bucket: bucket,
+          bucket: root,
           delete: {
             objects: delete_keys
           }
@@ -59,7 +56,7 @@ module Simmer
 
       private
 
-      attr_reader :aws_s3_client, :bucket, :encryption, :files_dir
+      attr_reader :aws_s3_client, :encryption, :files_dir
 
       def write_single(dest, src)
         src = File.expand_path(src)
@@ -67,19 +64,13 @@ module Simmer
         File.open(src, 'rb') do |file|
           aws_s3_client.put_object(
             body: file.read,
-            bucket: bucket,
+            bucket: root,
             key: dest,
             server_side_encryption: encryption
           )
         end
 
         nil
-      end
-
-      def assert_bucket_name(name)
-        return if name.to_s.end_with?(BUCKET_SUFFIX)
-
-        raise ArgumentError, "bucket (#{name}) must end in #{BUCKET_SUFFIX}"
       end
     end
   end
