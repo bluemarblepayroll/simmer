@@ -133,6 +133,11 @@ assert:
         - call_sign: hulk
           first: bruce
           last: banner
+    - type: table
+      name: agents
+      logic: includes
+      records:
+        - last: stark
     - type: output
       value: output to stdout
 ````
@@ -206,14 +211,20 @@ assert:
         - call_sign: hulk
           first: bruce
           last: banner
+    - type: table
+      name: agents
+      logic: includes
+      records:
+        - last: stark
     - type: output
       value: output to stdout
 ````
 
-This contains a table and output assertion.  It explicitly states that:
+This contains two table and one output assertion.  It explicitly states that:
 
-* The table `agents` should contain two records with the column values as described.
-* The output should contain the string described in the value somewhere in the log.
+* The table `agents` should exactly contain two records with the column values as described (iron_man and hulk)
+* The table `agents` should include a record where the last name is `stark`
+* The output should contain the string described in the value somewhere in the log
 
 ###### Table Assertion Rules
 
