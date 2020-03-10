@@ -13,11 +13,18 @@ Gem::Specification.new do |s|
 
   s.authors     = ['Matthew Ruggio']
   s.email       = ['mruggio@bluemarblepayroll.com']
-  s.files       = `git ls-files`.split("\n")
-  s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.files       = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  s.bindir      = 'exe'
   s.executables = %w[simmer]
   s.homepage    = 'https://github.com/bluemarblepayroll/simmer'
   s.license     = 'MIT'
+  s.metadata    = {
+    'bug_tracker_uri' => 'https://github.com/bluemarblepayroll/simmer/issues',
+    'changelog_uri' => 'https://github.com/bluemarblepayroll/simmer/blob/master/CHANGELOG.md',
+    'documentation_uri' => 'https://www.rubydoc.info/gems/simmer',
+    'homepage_uri' => s.homepage,
+    'source_code_uri' => s.homepage
+  }
 
   s.required_ruby_version = '>= 2.5'
 
