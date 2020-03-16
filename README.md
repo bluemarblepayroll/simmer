@@ -76,15 +76,23 @@ spoon_client:
 #   secret_access_key:
 ````
 
+Note: You can configure any options for `mysql_database` listed in the [mysql2 gem configuration options](https://github.com/brianmario/mysql2#connection-options).
+
 Fill out the missing configuration values required for each section.  If you would like to use your local file system then un-comment the `local_file_system` key.  If you would like to use AWS S3 then un-comment out the `aws_file_system` key.
+
+Note: There is a naming-convention-based protection to help ensure non-test database and file systems do not get accidentally wiped that you must follow:
+
+1. Database names must end in `_test'
+2. local file system dir must end in `-test`
+3. AWS file system bucket must end in `-test`
 
 ### Simmer Directory
 
 You will also need to create the following folder structure in your project's root folder:
 
 * **simmer/files**: Place any files necessary to stage in this directory.
-* **simmer/fixtures**: Place yaml files, that describe database records, necessary to stage the database.
-* **simmer/specs**: Place specification yaml files here.
+* **simmer/fixtures**: Place YAML files, that describe database records, necessary to stage the database.
+* **simmer/specs**: Place specification YAML files here.
 
 It does not matter how each of these directories are internally structured, they can contain folder structure in any arbitrary way.  These directories should be version controlled as they contain the necessary information to execute your tests.  But you may want to ignore the `simmer/results` directory as that will store the results after execution.
 
@@ -158,9 +166,14 @@ Each file entry specifies two things:
 
 ###### Fixtures
 
-Each fixture entry contains the name of a fixture specified in one of the yaml files within fixture directory.
+Fixtures will populate the database specified in the `mysql_database` section of `simmer.yaml`.  In order to do this you need to:
 
-Fixtures live in yaml files within the `simmer/fixtures` directory.  They can be placed in any arbitrary file, the only restriction is their top-level keys that uniquely identify a fixture.  Here is an example of a fixture file:
+1. Add the fixture to a YAML file in the `simmer/fixtures` directory.
+2. Add the name of the fixture you wish to use in the `stage/fixtures` section as illustrated above
+
+**Adding Fixtures**
+
+Fixtures live in YAML files within the `simmer/fixtures` directory.  They can be placed in any arbitrary file, the only restriction is their top-level keys that uniquely identify a fixture.  Here is an example of a fixture file:
 
 ````yaml
 hulk:
@@ -178,7 +191,7 @@ iron_man:
     last: CLASSIFIED
 ````
 
-This example specifies two fixtures: `hulk` and `iron_man`.  Each will end up creating a record in the `agents` table with their respective attributes (columns.)
+This example specifies two fixtures: `hulk` and `iron_man`.  Each will end up creating a record in the `agents` table with their respective attributes (columns).
 
 ##### Act Section
 
@@ -224,7 +237,9 @@ This contains two table and one output assertion.  It explicitly states that:
 
 * The table `agents` should exactly contain two records with the column values as described (iron_man and hulk)
 * The table `agents` should include a record where the last name is `stark`
-* The output should contain the string described in the value somewhere in the log
+* The standard output should contain the string described in the value somewhere in the log
+
+**Note**: Output does not currently test the standard error, just the standard output.
 
 ###### Table Assertion Rules
 

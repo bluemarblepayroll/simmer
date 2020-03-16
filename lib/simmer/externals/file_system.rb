@@ -11,7 +11,7 @@ module Simmer
   module Externals
     # Provides the shared basics of all file systems.
     class FileSystem
-      SUFFIX = 'test'
+      SUFFIX = '-test'
 
       private_constant :SUFFIX
 

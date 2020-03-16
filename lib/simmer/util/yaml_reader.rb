@@ -30,7 +30,7 @@ module Simmer
         path     = File.expand_path(path)
         contents = File.read(path)
 
-        YAML.safe_load(contents)
+        YAML.safe_load(contents, [], [], true)
       end
 
       def wildcard_name

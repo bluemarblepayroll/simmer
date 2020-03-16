@@ -39,7 +39,7 @@ require_relative 'simmer/suite'
 
 # The main entry-point API for the library.
 module Simmer
-  DEFAULT_CONFIG_PATH = File.join('config', 'simmer.yaml')
+  DEFAULT_CONFIG_PATH = File.join('config', 'simmer.yaml').freeze
   DEFAULT_SIMMER_DIR  = 'simmer'
 
   class << self

@@ -26,11 +26,7 @@ module Simmer
     def assert(specification, output)
       assertions = specification.assert.assertions
 
-      bad_assertions = assertions.each_with_object([]) do |assertion, memo|
-        bad_assert = assertion.assert(database, output)
-
-        memo << bad_assert if bad_assert
-      end
+      bad_assertions = assertions.map { |assertion| assertion.assert(database, output) }.compact
 
       Result.new(bad_assertions)
     end

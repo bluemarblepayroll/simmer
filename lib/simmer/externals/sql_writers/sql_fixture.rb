@@ -9,7 +9,7 @@
 
 module Simmer
   module Externals
-    class MysqlDatabase
+    module SqlWriters
       # This class knows how to turn a fixture into sql.
       class SqlFixture
         extend Forwardable
@@ -28,10 +28,10 @@ module Simmer
         end
 
         def to_sql
-          sql_columns = fields.keys.join(',')
+          sql_columns = fields.keys.map { |k| "`#{k}`" }.join(',')
           sql_values  = fields.values.map { |v| "'#{client.escape(v.to_s)}'" }.join(',')
 
-          "INSERT INTO #{table} (#{sql_columns}) VALUES (#{sql_values})"
+          "INSERT INTO `#{table}` (#{sql_columns}) VALUES (#{sql_values})"
         end
 
         private

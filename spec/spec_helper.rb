@@ -31,11 +31,11 @@ def fixture(*filename)
 end
 
 def yaml_fixture(*filename)
-  YAML.safe_load(fixture(*filename))
+  YAML.safe_load(fixture(*filename), [], [], true)
 end
 
 def yaml_read(*filename)
-  YAML.safe_load(File.read(File.join(*filename)))
+  YAML.safe_load(File.read(File.join(*filename)), [], [], true)
 end
 
 def simmer_config

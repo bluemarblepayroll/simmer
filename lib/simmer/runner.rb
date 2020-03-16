@@ -37,7 +37,7 @@ module Simmer
       judge_result        = assert(specification, spoon_client_result)
 
       Result.new(id, judge_result, specification, spoon_client_result).tap do |result|
-        msg = result.pass? ? 'PASS' : 'FAIL'
+        msg = pass_message(result).upcase
         print_waiting('Done', 'Final verdict')
         print(msg)
       end
@@ -85,7 +85,7 @@ module Simmer
     def execute_spoon(specification, config)
       print_waiting('Act', 'Executing Spoon')
       spoon_client_result = spoon_client.run(specification, config)
-      msg = spoon_client_result.pass? ? 'Pass' : 'Fail'
+      msg = pass_message(spoon_client_result)
       print(msg)
 
       spoon_client_result
@@ -101,7 +101,7 @@ module Simmer
 
       output       = spoon_client_result.execution_result.out
       judge_result = judge.assert(specification, output)
-      msg          = judge_result.pass? ? 'Pass' : 'Fail'
+      msg          = pass_message(judge_result)
 
       print(msg)
 
@@ -124,6 +124,10 @@ module Simmer
       missing = len - msg.length
 
       "#{msg}#{char * missing}"
+    end
+
+    def pass_message(obj)
+      obj.pass? ? 'Pass' : 'Fail'
     end
   end
 end

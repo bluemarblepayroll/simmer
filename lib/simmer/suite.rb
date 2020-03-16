@@ -13,6 +13,8 @@ require_relative 'suite/result'
 module Simmer
   # Runs a collection of specifications and then writes down the results to disk.
   class Suite
+    LINE_LENGTH = 80
+
     def initialize(
       config:,
       out:,
@@ -73,7 +75,7 @@ module Simmer
     end
 
     def print_line
-      out.puts('-' * 60)
+      out.puts('-' * LINE_LENGTH)
     end
   end
 end

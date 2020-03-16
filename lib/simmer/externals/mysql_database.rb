@@ -7,13 +7,13 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'mysql_database/sql_fixture'
+require_relative 'sql_writers/sql_fixture'
 
 module Simmer
   module Externals
     # Provides a wrapper around mysql2 for Simmer.
     class MysqlDatabase
-      DATABASE_SUFFIX = 'test'
+      DATABASE_SUFFIX = '_test'
 
       def initialize(client, exclude_tables = [])
         @client = client
@@ -57,7 +57,7 @@ module Simmer
       end
 
       def seed_sql_statements(fixtures)
-        fixtures.map { |fixture| SqlFixture.new(client, fixture).to_sql }
+        fixtures.map { |fixture| SqlWriters::SqlFixture.new(client, fixture).to_sql }
       end
 
       def clean_sql_statements

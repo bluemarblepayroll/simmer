@@ -11,7 +11,7 @@ require 'spec_helper'
 require 'mocks/aws_s3_client'
 
 describe Simmer::Externals::AwsFileSystem do
-  let(:bucket_name)          { 'test' }
+  let(:bucket_name)          { 'matt-test' }
   let(:encryption)           { 'AES256' }
   let(:files_dir)            { File.join('spec', 'fixtures') }
   let(:specification_path)   { File.join('specifications', 'load_noc_list.yaml') }
