@@ -37,7 +37,7 @@ module Simmer
       judge_result        = assert(specification, spoon_client_result)
 
       Result.new(id, judge_result, specification, spoon_client_result).tap do |result|
-        msg = pass_message(result).upcase
+        msg = pass_message(result)
         print_waiting('Done', 'Final verdict')
         print(msg)
       end
