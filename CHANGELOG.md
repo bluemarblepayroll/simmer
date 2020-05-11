@@ -1,5 +1,4 @@
-
-# 2.0.0 (May 8th, 2020)
+# 2.0.0 (May 11th, 2020)
 
 Breaking Changes:
 
