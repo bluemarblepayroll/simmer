@@ -87,6 +87,9 @@ module Simmer
       print("#{count} record(s) inserted")
 
       count
+    rescue Database::FixtureSet::FixtureMissingError => e
+      print('Missing Fixture(s)')
+      raise e
     end
 
     def clean_file_system
