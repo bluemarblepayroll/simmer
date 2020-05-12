@@ -86,8 +86,16 @@ module Simmer
 
     def execute_spoon(specification, config)
       print_waiting('Act', 'Executing Spoon')
+
       spoon_client_result = spoon_client.run(specification, config)
-      msg = pass_message(spoon_client_result)
+      time_in_seconds     = spoon_client_result.time_in_seconds
+      code                = spoon_client_result.execution_result.status.code
+
+      msg = [
+        pass_message(spoon_client_result),
+        "(Exited with code #{code} after #{time_in_seconds} seconds)"
+      ].join(' ')
+
       print(msg)
 
       spoon_client_result
