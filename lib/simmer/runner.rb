@@ -123,6 +123,9 @@ module Simmer
       print(msg)
 
       spoon_client_result
+    rescue Timeout::Error => e
+      print('Timed out')
+      raise e
     end
 
     def assert(specification, spoon_client_result)
