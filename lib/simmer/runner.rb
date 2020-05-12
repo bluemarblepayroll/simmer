@@ -43,7 +43,7 @@ module Simmer
       ).tap do |result|
         print_result(result)
       end
-    rescue Database::FixtureSet::FixtureMissingError => e
+    rescue Database::FixtureSet::FixtureMissingError, Timeout::Error => e
       Result.new(
         id: id,
         specification: specification,
