@@ -126,4 +126,38 @@ describe Simmer do
       end
     end
   end
+
+  context 'when the fixtures are missing' do
+    let(:spec_path)   { File.join('spec', 'fixtures', 'specifications', 'missing_fixtures.yaml') }
+    let(:simmer_dir)  { File.join('spec', 'simmer_spec') }
+    let(:out)         { Out.new }
+    let(:config_path) { stage_simmer_config(spoon_path, args) }
+
+    context 'when pdi does not do anything but does not fail' do
+      let(:spoon_path)  { File.join('spec', 'mocks', 'spoon') }
+      let(:args)        { 0 }
+
+      it 'fails' do
+        results = described_class.run(
+          spec_path,
+          config_path: config_path,
+          out: out,
+          simmer_dir: simmer_dir
+        )
+
+        expect(results.pass?).to be false
+      end
+
+      it 'records error' do
+        results = described_class.run(
+          spec_path,
+          config_path: config_path,
+          out: out,
+          simmer_dir: simmer_dir
+        )
+
+        expect(results.runner_results.first.errors).to include(/fixture missing/)
+      end
+    end
+  end
 end

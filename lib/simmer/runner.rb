@@ -30,24 +30,45 @@ module Simmer
       print("Name: #{specification.name}")
       print("Path: #{specification.path}")
 
-      clean_db
-      seed_db(specification)
-      clean_file_system
-      seed_file_system(specification)
+      clean_and_seed(specification)
 
       spoon_client_result = execute_spoon(specification, config)
       judge_result        = assert(specification, spoon_client_result)
 
-      Result.new(id, judge_result, specification, spoon_client_result).tap do |result|
-        msg = pass_message(result)
-        print_waiting('Done', 'Final verdict')
-        print(msg)
+      Result.new(
+        id: id,
+        judge_result: judge_result,
+        specification: specification,
+        spoon_client_result: spoon_client_result
+      ).tap do |result|
+        print_result(result)
+      end
+    rescue Database::FixtureSet::FixtureMissingError => e
+      Result.new(
+        id: id,
+        specification: specification,
+        errors: e.message
+      ).tap do |result|
+        print_result(result)
       end
     end
 
     private
 
     attr_reader :database, :file_system, :fixture_set, :judge, :out
+
+    def print_result(result)
+      msg = pass_message(result)
+      print_waiting('Done', 'Final verdict')
+      print(msg)
+    end
+
+    def clean_and_seed(specification)
+      clean_db
+      seed_db(specification)
+      clean_file_system
+      seed_file_system(specification)
+    end
 
     def clean_db
       print_waiting('Stage', 'Cleaning database')
