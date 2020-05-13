@@ -54,7 +54,7 @@ describe Simmer do
           simmer_dir: simmer_dir
         )
 
-        expect(results.pass?).to be false
+        expect(results).not_to be_passing
       end
     end
 
@@ -70,7 +70,7 @@ describe Simmer do
           simmer_dir: simmer_dir
         )
 
-        expect(results.pass?).to be false
+        expect(results).not_to be_passing
       end
     end
 
@@ -86,7 +86,7 @@ describe Simmer do
           simmer_dir: simmer_dir
         )
 
-        expect(results.pass?).to be true
+        expect(results).to be_passing
       end
     end
 
@@ -102,7 +102,7 @@ describe Simmer do
           simmer_dir: simmer_dir
         )
 
-        expect(results.pass?).to be false
+        expect(results).not_to be_passing
       end
     end
 
@@ -119,7 +119,7 @@ describe Simmer do
           simmer_dir: simmer_dir
         )
 
-        expect(results.pass?).to be false
+        expect(results).not_to be_passing
       end
 
       it 'records error' do
@@ -175,7 +175,7 @@ describe Simmer do
           simmer_dir: simmer_dir
         )
 
-        expect(results.pass?).to be false
+        expect(results).not_to be_passing
       end
 
       it 'records error' do

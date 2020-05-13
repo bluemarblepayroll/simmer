@@ -38,11 +38,11 @@ module Simmer
       end
 
       def pass?
-        (
-          judge_result&.pass? &&
-            spoon_client_result&.pass? &&
-            errors.empty?
-        ) || false
+        [
+          judge_result&.pass?,
+          spoon_client_result&.pass?,
+          errors.empty?,
+        ].all?
       end
 
       def fail?
@@ -58,8 +58,16 @@ module Simmer
           'pass' => pass?,
           'spoon_client_result' => spoon_client_result.to_h,
           'judge_result' => judge_result.to_h,
-          'errors' => errors
+          'errors' => errors,
         }
+      end
+
+      def execution_output
+        execution_result&.out
+      end
+
+      def execution_result
+        spoon_client_result&.execution_result
       end
     end
   end

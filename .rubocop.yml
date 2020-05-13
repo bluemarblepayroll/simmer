@@ -23,3 +23,9 @@ Metrics/AbcSize:
 
 Metrics/ClassLength:
   Max: 125
+
+Style/TrailingCommaInHashLiteral:
+  Enabled: false
+
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
