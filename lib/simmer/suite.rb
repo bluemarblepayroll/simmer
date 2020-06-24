@@ -11,6 +11,7 @@ require_relative 'suite/output_router'
 require_relative 'suite/pdi_output_writer'
 require_relative 'suite/results_writer'
 require_relative 'suite/result'
+require_relative 'suite/summerizer'
 
 module Simmer
   # Runs a collection of specifications and then writes down the results to disk.
@@ -39,7 +40,7 @@ module Simmer
         runner.complete
 
         Result.new(runner_results).tap do |result|
-          output_summary(result.pass?)
+          output_summary(result)
 
           ResulstWriter.new(result, results_dir).write!
 
@@ -80,6 +81,8 @@ module Simmer
     end
 
     def output_summary(passed)
+      Summerizer.new(out).summerize_suite_results
+      # TODO: Move this into the summerizer
       if passed
         out.puts('Suite ended successfully')
       else
