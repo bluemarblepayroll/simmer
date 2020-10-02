@@ -1,6 +1,6 @@
 # Simmer Change Log
 
-## 4.0.0 (TBD, 2020)
+## 4.0.0 (June 24th, 2020)
 
 Additions:
 
